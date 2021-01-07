@@ -28,9 +28,16 @@ class TreeNode:
         self.depth = depth
     
     # from lgbm c++ source
+    # def threshold_l1(self, w, alpha):
+    #     reg_s = np.max((0.0, np.abs(w) - alpha))
+    #     return np.sign(w)*reg_s
     def threshold_l1(self, w, alpha):
-        reg_s = np.max((0.0, np.abs(w) - alpha))
-        return np.sign(w)*reg_s
+        if w > alpha:
+            return w - alpha
+        elif w < -alpha:
+            return w + alpha
+        else:
+            return 0
     
     def calc_weight(self, G, H, params):
         w = -self.threshold_l1(G, params.alpha) / (H + params.lam)
@@ -46,7 +53,7 @@ class TreeNode:
         w = self.calc_weight(G, H, params)
 
         # this is 2* the terms from equation 7 to avoid the slower 1/2 division (copying from c++ source)
-        gain = (-2*G*w + (H+params.lam)*(w**2))
+        gain = -(2*G*w + (H+params.alpha)*(w**2))
         return gain - 2*params.alpha * abs(w)
 
     def calc_split_gain(self, G, H, G_l, G_r, H_l, H_r, params):
@@ -66,12 +73,11 @@ class TreeNode:
 
     def _get_child_instances(self, X):
         filter = np.logical_and(X[:, self.feature] < self.threshold, self.instances)
-        return filter, 1 - filter
+        return filter, ~filter
 
     # exact greedy algorithm for enumerating all possibe splits (algorithm 1)
     def enumerate_splits(self, X, grad, hess, params):
-        assert X.shape[0] == len(grad) == len(hess)
-        if self.depth > params.max_depth:
+        if self.depth >= params.max_depth:
             # if root, don't check min_child_weight
             if self.depth == 0:
                 params = copy.deepcopy(params)
@@ -93,23 +99,26 @@ class TreeNode:
             G_l, H_l, = 0, 0
             # can speed this up significantly by pre-sorting columns
             subset_ordered_idx = X_i[:, feature].argsort()
-            feature_x = X_i[subset_ordered_idx, feature]
+            feature_ordered_subset = X_i[subset_ordered_idx, feature]
+            grad_ordered_subset = grad_i[subset_ordered_idx]
+            hess_ordered_subset = hess_i[subset_ordered_idx]
 
-            for i in range(feature_x.shape[0]-1):
-                G_l += grad_i[subset_ordered_idx[i]]
-                H_l += hess_i[subset_ordered_idx[i]]
+            for i in range(feature_ordered_subset.shape[0]-1):
+                G_l += grad_ordered_subset[i]
+                H_l += hess_ordered_subset[i]
                 G_r = G - G_l
                 H_r = H - H_l
 
                 # don't consider split if it doesn't uniquely separate obs (i.e. ignore repeat values)
-                if feature_x[i] == feature_x[i+1]:
+                if feature_ordered_subset[i] == feature_ordered_subset[i+1]:
                     continue
 
                 gain = self.calc_split_gain(G, H, G_l, G_r, H_l, H_r, params)
                 if gain > best_gain:
                     best_gain = gain
                     self.feature = feature
-                    self.threshold = (feature_x[i] + feature_x[i + 1]) / 2
+                    # use midpoint of between feature values as threshold
+                    self.threshold = (feature_ordered_subset[i] + feature_ordered_subset[i + 1]) / 2
 
         # means there's no further gain
         if best_gain == 0:
@@ -157,14 +166,12 @@ class XGPyBoost:
             assert("Base margin must be number or np array")
         return preds.astype(np.float64)
 
-    def _fit_tree(self, root, grad, hess, params):
+    def _fit_tree(self, X, grad, hess, params):
         # initialize only root node
-        root = TreeNode(np.arange(X.shape[0]))
+        root = TreeNode(np.full(X.shape[0], True))#np.arange(X.shape[0]))
         stack = [root]
         # recursively add nodes to the stack until we're done
         while len(stack) > 0:
-            if len(stack) > 100:
-                break
             node = stack.pop()
             node.enumerate_splits(X, grad, hess, params)
             if not node.is_leaf:
@@ -173,14 +180,13 @@ class XGPyBoost:
             
         return root
 
-
     def fit(self, X, y, base_margin = 0):
         preds = self._get_init_preds(base_margin, X)
         trees = []
         for i in range(self.params.n_trees):
             # get initial grads and hess
             grad, hess = self.obj(y, preds)
-            tree = self._fit_tree(X, grad, hess, model.params)
+            tree = self._fit_tree(X, grad, hess, self.params)
             preds += tree.predict(X)
             trees.append(tree)
         self.trees = trees
@@ -195,24 +201,3 @@ def mse_obj(y_true, y_pred):
     grad = y_pred - y_true
     hess = np.ones_like(y_true)
     return grad, hess
-
-np.random.seed(1234)
-X = np.random.standard_normal(size = (10, 3))
-y = X[:, 0]*2 + X[:, 1]*4 + X[:, 2]*3
-# X = np.vstack((np.ones(5), np.ones(5)*2)).T
-# y = np.ones(5)
-
-model = XGPyBoost(n_trees = 1, obj = mse_obj, max_depth = 1, eta = 0.3, min_child_weight = 2)
-model.fit(X, y)
-print(model.predict(X))
-
-import xgboost as xgb
-param = {'max_depth' : 1,
-         'base_score' : 0,
-         'objective' : 'reg:squarederror',
-         'tree_method' : 'exact',
-         'eta' : 0.3,
-          'min_child_weight' : 2}
-dtrain = xgb.DMatrix(X, label = y)
-xgb_model = xgb.train(param, dtrain, 1)
-print(xgb_model.predict(dtrain))
