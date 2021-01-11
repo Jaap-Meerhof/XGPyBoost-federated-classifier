@@ -190,6 +190,9 @@ class XGPyBoost:
         for tree in self.trees:
             preds += tree.predict(X)
         return preds
+
+    def predict_proba(self, X, base_margin = 0):
+        return 1/(1+np.exp(-self.predict(X, base_margin)))
         
 def mse_obj(y_true, y_pred):
     grad = y_pred - y_true
