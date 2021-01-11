@@ -28,16 +28,9 @@ class TreeNode:
         self.depth = depth
     
     # from lgbm c++ source
-    # def threshold_l1(self, w, alpha):
-    #     reg_s = np.max((0.0, np.abs(w) - alpha))
-    #     return np.sign(w)*reg_s
     def threshold_l1(self, w, alpha):
-        if w > alpha:
-            return w - alpha
-        elif w < -alpha:
-            return w + alpha
-        else:
-            return 0
+        reg_s = np.max((0.0, np.abs(w) - alpha))
+        return np.sign(w)*reg_s
     
     def calc_weight(self, G, H, params):
         w = -self.threshold_l1(G, params.alpha) / (H + params.lam)
@@ -53,7 +46,7 @@ class TreeNode:
         w = self.calc_weight(G, H, params)
 
         # this is 2* the terms from equation 7 to avoid the slower 1/2 division (copying from c++ source)
-        gain = -(2*G*w + (H+params.alpha)*(w**2))
+        gain = -(2*G*w + (H+params.lam)*(w**2))
         return gain - 2*params.alpha * abs(w)
 
     def calc_split_gain(self, G, H, G_l, G_r, H_l, H_r, params):
@@ -72,8 +65,9 @@ class TreeNode:
         return self.calc_weight(G, H, params) * params.eta
 
     def _get_child_instances(self, X):
-        filter = np.logical_and(X[:, self.feature] < self.threshold, self.instances)
-        return filter, ~filter
+        linstances = np.logical_and(X[:, self.feature] < self.threshold, self.instances)
+        rinstances = np.logical_and(X[:, self.feature] >= self.threshold, self.instances)
+        return linstances, rinstances
 
     # exact greedy algorithm for enumerating all possibe splits (algorithm 1)
     def enumerate_splits(self, X, grad, hess, params):
@@ -114,7 +108,7 @@ class TreeNode:
                     continue
 
                 gain = self.calc_split_gain(G, H, G_l, G_r, H_l, H_r, params)
-                if gain > best_gain:
+                if gain >= best_gain:
                     best_gain = gain
                     self.feature = feature
                     # use midpoint of between feature values as threshold
