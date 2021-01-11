@@ -198,3 +198,4 @@ def mse_obj(y_true, y_pred):
     grad = y_pred - y_true
     hess = np.ones_like(y_true)
     return grad, hess
+    
