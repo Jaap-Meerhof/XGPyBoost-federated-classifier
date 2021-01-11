@@ -74,4 +74,4 @@ class TestXGB:
         assert(np.allclose(xgbpy_preds, xgb_preds))
 
 
-TestXGB().test_default_params()
+#TestXGB().test_default_params()
