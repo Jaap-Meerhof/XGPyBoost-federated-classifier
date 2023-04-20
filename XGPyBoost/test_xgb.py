@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import xgboost as xgb
-from XGPyBoost.XGPyBoost import *
+from XGPyBoost import *
 
 np.random.seed(1234)
 
@@ -74,4 +74,6 @@ class TestXGB:
         assert(np.allclose(xgbpy_preds, xgb_preds))
 
 
-#TestXGB().test_default_params()
+TestXGB().test_default_params()
+TestXGB().test_max_depth()
+TestXGB().test_n_trees()
