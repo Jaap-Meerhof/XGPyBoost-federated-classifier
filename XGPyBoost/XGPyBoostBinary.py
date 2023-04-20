@@ -141,9 +141,9 @@ class TreeNode:
     # this is gonna be reallyy slow without threading
     def predict(self, X):
         preds = np.apply_along_axis(self.predict_one, 1, X)
-        probabilities = 1.0 / (1.0 + np.exp(-preds))
-        binary_predictions = np.where(probabilities >= 0.5, 1, 0)
-        return binary_predictions
+        # probabilities = 1.0 / (1.0 + np.exp(-preds))
+        # binary_predictions = np.where(probabilities >= 0.5, 1, 0)
+        return preds
 
 class XGPyBoostBinary:
     def __init__(
@@ -244,6 +244,11 @@ def hessfunc(x):
     return max(2*x*(1-x), 1e-6)
 
 
+def logistic_obj(y_true, y_pred):
+    test = 1.0/(1.0+np.exp(-y_pred))
+    grad = test - y_true
+    hess = test * (1.0 - test)
+    return grad, hess
 
 def softprob_obj(y_true, y_pred):
     '''y_true = y, not one-hot-encoded just numbers '''

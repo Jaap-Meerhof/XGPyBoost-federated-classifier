@@ -11,9 +11,9 @@ np.random.seed(1234)
 def main():
     print("starting tests")
     n_classes = 2
-    X, y = make_classification(n_samples=1250, n_features=20, n_informative=4, n_redundant=0, n_classes=n_classes, random_state=42)
+    X, y = make_classification(n_samples=2250, n_features=20, n_informative=4, n_redundant=0, n_classes=n_classes, random_state=42)
 
-    model = XGPyBoostBinary(n_trees=5, obj=softprob_obj, eta=0.3, gamma=0.5, max_depth=6, min_child_weight=1.0, )
+    model = XGPyBoostBinary(n_trees=5, obj=logistic_obj, eta=0.3, gamma=0.5, max_depth=6, min_child_weight=1.0, )
     model.fit(X,y)
     preds = model.predict(X)
     print(preds)
