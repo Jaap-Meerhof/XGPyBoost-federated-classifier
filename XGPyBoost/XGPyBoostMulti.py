@@ -196,10 +196,10 @@ class XGPyBoostMulti:
         self.trees = [[] for i in range(self.n_classes)]
         for i in range(self.params.n_trees):
             print("starting with tree {}".format(i))
+            grad, hess = self.obj(y, preds)
             for c in range(self.n_classes):
                 # get initial grads and hess
-                grad, hess = self.obj(y, preds[:, c], c)
-                tree = self._fit_tree(X, grad, hess, self.params)
+                tree = self._fit_tree(X, grad[:, c], hess[:, c], self.params)
                 self.trees[c].append(tree)
 
                 # preds = self.predict(X)
@@ -218,38 +218,51 @@ class XGPyBoostMulti:
 
 
     def predict(self, X, base_margin = 0):
-        preds = self.initial_preds[:X.shape[0]]
-        # vote
-        # binary_predictions = np.zeros((X.shape[0], self.params.n_trees +1), dtype='int64')
-        # binary_predictions = [[] for i in range(X.shape[0])]
-        # binary_predictions[:, 0] = np.where(preds >= 0.5, 1, 0)
-        probas = np.zeros((X.shape[0], self.n_classes))
-        for c in range(self.n_classes):
-            tree_prob = np.zeros((X.shape[0], self.params.n_trees+1))
-            tree_prob[:, 0] = preds[:, c]
-            for i, tree in enumerate(self.trees[c]):
-                y_pred = tree.predict(X)
+        
 
-                wmax = max(y_pred) # line 100 multiclass_obj.cu
+        probas = np.zeros((X.shape[0], self.n_classes, self.params.n_trees+1))
+        
+        y_pred = np.zeros((X.shape[0], self.n_classes, self.params.n_trees+1))
+        
+        y_pred[:, :, 0] = self.initial_preds[:X.shape[0], :]
+
+        for c in range(self.n_classes):
+            for i, tree in enumerate(self.trees[c]):
+                y_pred[:, c, i+1] = tree.predict(X)
+
+        
+
+        # now y_preds are filled
+        for i in range(self.params.n_trees+1):
+            for rowid in range(y_pred.shape[0]):
+                row = y_pred[rowid, : , i]
+                wmax = max(row) # line 100 multiclass_obj.cu
                 wsum =0.0
-                for y in y_pred : wsum +=  np.exp(y - wmax)   
-                p = np.exp(y_pred-wmax) / wsum
-                tree_prob[:, i+1] = p
-                # tmp = [np.exp(x)/sum(np.exp(tmp)) for x in tmp]
-                # binary = np.where(p >= 0.5, 1, 0)
-                # binary_predictions[:, i+1] = binary
-                # binary_predictions[:, i+1]
+                for y in row : wsum +=  np.exp(y - wmax)   
+                probas[rowid,:, i] = np.exp(row -wmax) / wsum
+                
+        probas = np.average(probas, axis=2)
+
+        # tmp = [np.exp(x)/sum(np.exp(tmp)) for x in tmp]
+        # binary = np.where(p >= 0.5, 1, 0)
+        # binary_predictions[:, i+1] = binary
+        # binary_predictions[:, i+1]
             
-            for i in range(X.shape[0]):
-                average = sum(tree_prob[i])/len(tree_prob[i])
-                probas[i, c] =  average
+        # for i in range(X.shape[0]):
+        #     average = sum(probas[i, :])/len(probas[i, :])
+        #     probas[i, c] =  average
 
         # TODO take the highest probability and return its location in the list
-        pass
+        pass 
             # for i in range(X.shape[0]):
             #     votes[i][c] = np.argmax(np.bincount(binary_predictions[i, :]))
-        return 1
 
+        highets_prob = np.zeros((X.shape[0], self.n_classes), dtype='int64')
+        for i in range(X.shape[0]):
+            highets_prob[i] = np.where(probas[i] == np.amax(probas[i]), 1, 0)
+
+        return [ np.argmax(probdrow ) for probdrow in highets_prob ]
+    
     def predict_proba(self, X, base_margin = 0):
         return 1/(1+np.exp(-self.predict(X, base_margin)))
         
@@ -298,4 +311,20 @@ def softprob_obj(y_true, y_pred, c):
         # hess = np.vectorize(hessfunc)(y_pred)
         grad[r] = g
         hess[r] = h
+    return grad, hess
+
+def softprob_obj_tmp(y_true, y_pred):
+    grad = np.zeros((y_pred.shape[0], y_pred.shape[1]), dtype=float) # for multi-class
+    hess = np.zeros((y_pred.shape[0], y_pred.shape[1]), dtype=float) # for multi-class
+    for rowid in range(y_pred.shape[0]):
+        wmax = max(y_pred[rowid]) # line 100 multiclass_obj.cu
+        wsum =0.0
+        for i in y_pred[rowid] : wsum +=  np.exp(i - wmax)
+        for c in range(y_pred.shape[1]):
+            p = np.exp(y_pred[rowid][c]- wmax) / wsum
+            target = y_true[rowid]
+            g = p - 1.0 if c == target else p
+            h = max((2.0 * p * (1.0 - p)).item(), 1e-6)
+            grad[rowid][c] = g
+            hess[rowid][c] = h
     return grad, hess
