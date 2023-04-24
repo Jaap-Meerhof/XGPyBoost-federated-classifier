@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 import copy
+from copy import deepcopy
 from sklearn.preprocessing import LabelEncoder
 
 
@@ -145,7 +146,7 @@ class TreeNode:
         # binary_predictions = np.where(probabilities >= 0.5, 1, 0)
         return preds
 
-class XGPyBoostBinary:
+class XGPyBoostMulti:
     def __init__(
         self,
         n_trees,
@@ -169,12 +170,10 @@ class XGPyBoostBinary:
         self.le = LabelEncoder()
         labels = self.le.fit_transform(y)
         Y = self._to_categorical(labels) # [X_size [n_classes]] labeled with integers 0 to n_classes-1 one-hot encoded
-        bincount = np.bincount(y)
-
         del labels
         
         y_proba = np.full(Y.shape, 1/Y.shape[1]) # inpreitial probabilities
-        return Y, y_proba[:,0]
+        return Y, y_proba
 
     def _fit_tree(self, X, grad, hess, params):
         # initialize only root node
@@ -191,18 +190,20 @@ class XGPyBoostBinary:
         return root
 
     def fit(self, X, y, base_margin = 0):
+        self.n_classes = np.amax(y) + 1
         Y, self.initial_preds = self._get_init_preds_y(y)
-        preds = self.initial_preds
-        self.trees = []
+        preds = deepcopy(self.initial_preds) # TODO has to be of [nclasses]
+        self.trees = [[] for i in range(self.n_classes)]
         for i in range(self.params.n_trees):
             print("starting with tree {}".format(i))
-            # get initial grads and hess
-            grad, hess = self.obj(y, preds)
-            tree = self._fit_tree(X, grad, hess, self.params)
-            self.trees.append(tree)
+            for c in range(self.n_classes):
+                # get initial grads and hess
+                grad, hess = self.obj(y, preds[:, c], c)
+                tree = self._fit_tree(X, grad, hess, self.params)
+                self.trees[c].append(tree)
 
-            # preds = self.predict(X)
-            preds = tree.predict(X)
+                # preds = self.predict(X)
+                preds[:, c] = tree.predict(X)
 
 
     '''http://ethen8181.github.io/machine-learning/trees/gbm/gbm.html#Gradient-Boosting-Machine-(GBM) '''
@@ -219,23 +220,35 @@ class XGPyBoostBinary:
     def predict(self, X, base_margin = 0):
         preds = self.initial_preds[:X.shape[0]]
         # vote
-        binary_predictions = np.zeros((X.shape[0], self.params.n_trees +1), dtype='int64')
+        # binary_predictions = np.zeros((X.shape[0], self.params.n_trees +1), dtype='int64')
         # binary_predictions = [[] for i in range(X.shape[0])]
-        binary_predictions[:, 0] = np.where(preds >= 0.5, 1, 0)
-        
-        for i, tree in enumerate(self.trees):
-            tmp = tree.predict(X)
-            tmp = 1.0/(1.0+np.exp(-tmp))
-            # tmp = [np.exp(x)/sum(np.exp(tmp)) for x in tmp]
-            tmp = np.where(tmp >= 0.5, 1, 0)
-            binary_predictions[:, i+1] = tmp
-            pass
-            # binary_predictions[:, i+1]
+        # binary_predictions[:, 0] = np.where(preds >= 0.5, 1, 0)
+        probas = np.zeros((X.shape[0], self.n_classes))
+        for c in range(self.n_classes):
+            tree_prob = np.zeros((X.shape[0], self.params.n_trees+1))
+            tree_prob[:, 0] = preds[:, c]
+            for i, tree in enumerate(self.trees[c]):
+                y_pred = tree.predict(X)
 
-        votes = np.zeros(X.shape[0])
-        for i in range(X.shape[0]):
-            votes[i] = np.argmax(np.bincount(binary_predictions[i, :]))
-        return votes
+                wmax = max(y_pred) # line 100 multiclass_obj.cu
+                wsum =0.0
+                for y in y_pred : wsum +=  np.exp(y - wmax)   
+                p = np.exp(y_pred-wmax) / wsum
+                tree_prob[:, i+1] = p
+                # tmp = [np.exp(x)/sum(np.exp(tmp)) for x in tmp]
+                # binary = np.where(p >= 0.5, 1, 0)
+                # binary_predictions[:, i+1] = binary
+                # binary_predictions[:, i+1]
+            
+            for i in range(X.shape[0]):
+                average = sum(tree_prob[i])/len(tree_prob[i])
+                probas[i, c] =  average
+
+        # TODO take the highest probability and return its location in the list
+        pass
+            # for i in range(X.shape[0]):
+            #     votes[i][c] = np.argmax(np.bincount(binary_predictions[i, :]))
+        return 1
 
     def predict_proba(self, X, base_margin = 0):
         return 1/(1+np.exp(-self.predict(X, base_margin)))
@@ -258,22 +271,25 @@ def logistic_obj(y_true, y_pred):
     hess = test * (1.0 - test)
     return grad, hess
 
-def softprob_obj(y_true, y_pred):
+def softprob_obj(y_true, y_pred, c):
     '''y_true = y, not one-hot-encoded just numbers '''
     # grad = np.zeros((y_pred.shape[0], y_pred.shape[1]), dtype=float) # for multi-class
     # hess = np.zeros((y_pred.shape[0], y_pred.shape[1]), dtype=float) # for multi-class
     grad = np.zeros((y_pred.shape[0]))
     hess = np.zeros((y_pred.shape[0]))
-
+    wmax = max(y_pred) # line 100 multiclass_obj.cu
+    wsum =0.0
+    for i in y_pred : wsum +=  np.exp(i - wmax)             
 
     for r in range(y_pred.shape[0]):
         
-        # p = np.exp(y_pred[r, :])/ sum(np.exp(y_pred[r, :]))
-        p = y_pred[r]
+
+         # TODO fix this, multiclass_obj.cu
+        p = np.exp(y_pred[r]- wmax) / wsum
         
         target = y_true[r]
 
-        c = 1 if p >=0.5 else 0
+        # c = 1 if p >=0.5 else 0
 
         g = p - 1.0 if c == target else p
         # g = target - p
