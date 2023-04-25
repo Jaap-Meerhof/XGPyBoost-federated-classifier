@@ -4,7 +4,7 @@ import pandas as pd
 import copy
 from copy import deepcopy
 from sklearn.preprocessing import LabelEncoder
-
+from threading import Thread
 
 @dataclass
 class Params:
@@ -194,16 +194,37 @@ class XGPyBoostMulti:
         Y, self.initial_preds = self._get_init_preds_y(y)
         preds = deepcopy(self.initial_preds) # TODO has to be of [nclasses]
         self.trees = [[] for i in range(self.n_classes)]
-        for i in range(self.params.n_trees):
-            print("starting with tree {}".format(i))
-            grad, hess = self.obj(y, preds)
-            for c in range(self.n_classes):
-                # get initial grads and hess
-                tree = self._fit_tree(X, grad[:, c], hess[:, c], self.params)
-                self.trees[c].append(tree)
 
-                # preds = self.predict(X)
-                preds[:, c] = tree.predict(X)
+        def fit_tree_thread(c):
+            tree = self._fit_tree(X, grad[:, c], hess[:, c], self.params)
+            self.trees[c].append(tree)
+            preds[:, c] = tree.predict(X)
+
+
+        for i in range(self.params.n_trees):
+            threads = []
+            grad, hess = self.obj(y, preds)
+            print("starting with tree {}".format(i))
+
+            for c in range(self.n_classes):
+                t = Thread(target=fit_tree_thread, args=(c,))
+                t.start()
+                threads.append(t)
+            for t in threads:
+                t.join()
+            
+        
+        # for i in range(self.params.n_trees):
+        #     threads = []
+        #     print("starting with tree {}".format(i))
+        #     grad, hess = self.obj(y, preds)
+        #     for c in range(self.n_classes):
+        #         # get initial grads and hess
+        #         tree = self._fit_tree(X, grad[:, c], hess[:, c], self.params) #TODO multithread!
+        #         self.trees[c].append(tree)
+
+        #         # preds = self.predict(X)
+        #         preds[:, c] = tree.predict(X)
 
 
     '''http://ethen8181.github.io/machine-learning/trees/gbm/gbm.html#Gradient-Boosting-Machine-(GBM) '''
