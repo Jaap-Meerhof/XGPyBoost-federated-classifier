@@ -92,7 +92,7 @@ class TreeNode:
         best_gain = 0.0
 
         # loop over feature columns
-        for feature in range(X.shape[1]):
+        for feature in range(X.shape[1]): # TODO parralerisation
             G_l, H_l, = 0, 0
             # can speed this up significantly by pre-sorting columns
             subset_ordered_idx = X_i[:, feature].argsort()
@@ -100,7 +100,7 @@ class TreeNode:
             grad_ordered_subset = grad_i[subset_ordered_idx]
             hess_ordered_subset = hess_i[subset_ordered_idx]
 
-            for i in range(feature_ordered_subset.shape[0]-1):
+            for i in range(feature_ordered_subset.shape[0]-1): #TODO Parralise
                 G_l += grad_ordered_subset[i]
                 H_l += hess_ordered_subset[i]
                 G_r = G - G_l
