@@ -1,0 +1,14 @@
+from modulegraph import ModuleGraph
+
+# Create a module graph for your script
+mg = ModuleGraph(path=[os.path.dirname(os.path.abspath(__file__))])
+mg.add_script('my_script.py')
+
+# Find any cycles in the module graph
+cycles = mg.find_cycles()
+if cycles:
+    print('Circular dependencies found:')
+    for cycle in cycles:
+        print(cycle)
+else:
+    print('No circular dependencies found.')
