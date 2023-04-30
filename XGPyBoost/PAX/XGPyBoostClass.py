@@ -17,7 +17,7 @@ class XGPyBoostClass:
         self.obj = obj
         self.params = Params(n_trees, **kwargs)
 
-    def create_first_tree(self, num_features):
+    def create_first_tree(num_features):
         tree = TreeNode(np.full(num_features, True))
         tree.weight = 1
         tree.is_leaf = True

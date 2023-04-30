@@ -1,5 +1,5 @@
 
-from dfsfddsketch import DDSketch
+from customddsketch import DDSketch
 
 import numpy as np
 sketch = DDSketch(0.01)

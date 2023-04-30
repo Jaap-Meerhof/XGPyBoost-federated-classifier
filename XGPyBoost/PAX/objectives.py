@@ -1,6 +1,6 @@
 import numpy as np
 
-def softprob_obj_tmp(y_true, y_pred):
+def softprob(y_true, y_pred):
     grad = np.zeros((y_pred.shape[0], y_pred.shape[1]), dtype=float) # for multi-class
     hess = np.zeros((y_pred.shape[0], y_pred.shape[1]), dtype=float) # for multi-class
     for rowid in range(y_pred.shape[0]):

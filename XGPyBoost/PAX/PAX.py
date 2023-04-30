@@ -1,5 +1,7 @@
 import numpy as np
 from XGPyBoostClass import *
+from customddsketch import DDSketch
+from typing import Tuple
 
 class PAX:
     def __init__(self) -> None:
@@ -16,12 +18,12 @@ class PAX:
             T (int): Maximum Number of Training Rounds
             l (callable): Model Loss Function
         """
-        amount_participants = X.shape[0]
+        amount_participants = len(X)
         P:list[PAXParticipant] = [PAXParticipant(i, X[i]) for i in range(amount_participants)]
         A:PAXAggregator = PAXAggregator(P)
         self.A = A
 
-        A.create_global_null_model() # line 1
+        A.create_global_null_model(X[0].shape[1]) # line 1
         epsilonP:np.ndarray[float] = A.compute_local_epsilon(eA) # line 2 & 6
 
         for i in range(amount_participants): # line 4-8
@@ -59,8 +61,8 @@ class PAXAggregator:
         self.P = P
         self.trees = []
 
-    def create_global_null_model(self) -> TreeNode:
-        self.trees.append(XGPyBoostClass.create_first_tree())
+    def create_global_null_model(self, numfeatures) -> TreeNode:
+        self.trees.append(XGPyBoostClass.create_first_tree(numfeatures))
 
     def compute_local_epsilon(self, eA:float)-> np.ndarray[float]:
         """Function compute_local_epsilon (line 29-40) from ong et al.
@@ -99,15 +101,20 @@ class PAXParticipant:
         self.idk:int = id
         self.X:np.ndarray = X
         self.DXpi = None # local histogram
+        self.e = None
 
 
     def getDXpi(self) -> object: # TODO change object to histogram
         return self.DXpi
 
-    def compute_histogram(self): # TODO use self.X and self.e to construct local historgram on features. store it in self.DXpi
-        pass
+    def compute_histogram(self) -> None: # TODO use self.X and self.e to construct local historgram on features. store it in self.DXpi
+        self.sketch = DDSketch(self.e)
+        for x in self.X:
+            self.sketch.add(x)
 
-    def calculatedifferentials(self): # use the prediction from self.prediction to calculate the differentials and store them in self.grad & self.hess
+
+
+    def calculatedifferentials(self) -> Tuple[np.ndarray, np.ndarray]: # use the prediction from self.prediction to calculate the differentials and store them in self.grad & self.hess
         pass
 
     def recieve_model(self, model):
