@@ -26,7 +26,7 @@ def main():
 
 
     pax = PAX()
-    pax.fit(X_train, y_train, EA, 100, softprob)
+    pax.fit(X_train, y_train, EA, 100, softprob, 255)
 
 
     pass

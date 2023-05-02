@@ -2,12 +2,13 @@ import numpy as np
 from XGPyBoostClass import *
 from customddsketch import DDSketch
 from typing import Tuple
+from treemodel import TreeNode
 
 class PAX:
     def __init__(self) -> None:
         pass
 
-    def fit(self, X:np.ndarray, y:np.ndarray, eA:float, T:int, l:callable) -> None:
+    def fit(self, X:np.ndarray, y:np.ndarray, eA:float, T:int, l:callable, number_of_bins:int) -> None:
         """Fit the model in a federated fashion
 
         Args:
@@ -19,7 +20,7 @@ class PAX:
             l (callable): Model Loss Function
         """
         amount_participants = len(X)
-        P:list[PAXParticipant] = [PAXParticipant(i, X[i]) for i in range(amount_participants)]
+        P:list[PAXParticipant] = [PAXParticipant(i, X[i], y[i]) for i in range(amount_participants)]
         A:PAXAggregator = PAXAggregator(P)
         self.A = A
 
@@ -29,17 +30,17 @@ class PAX:
         for i in range(amount_participants): # line 4-8
             Pi:PAXParticipant = P[i]
             Pi.recieve_e(epsilonP[i]) # line 5
-            Pi.compute_histogram() # line 7
+            Pi.compute_histogram(number_of_bins=number_of_bins) # line 7
 
         t = 0 # amount of trees counter
         trees = []
         while t <= T:
-            DA, GA, HA = None # line 11 # TODO initialize properly
+            DA = GA = HA = [] # line 11 # TODO initialize properly
             for i in range(amount_participants):
                 Pi:PAXParticipant = P[i]
                 Pi.recieve_model(A.getmodel())
                 Pi.predict()
-                gpi, hpi = Pi.calculatedifferentials()
+                gpi, hpi = Pi.calculatedifferentials(l)
                 DXpi = Pi.getDXpi()
                 DA = None # line 17 # TODO take union
                 GA = None # line 18 # TODO take union
@@ -97,32 +98,43 @@ class PAXAggregator:
 
 class PAXParticipant:
 
-    def __init__(self, id:int, X:np.ndarray) -> None:
+    def __init__(self, id:int, X:np.ndarray, y) -> None:
         self.idk:int = id
         self.X:np.ndarray = X
+        self.y:np.ndarray = y
         self.DXpi = None # local histogram
         self.e = None
+        self.model:TreeNode = None
 
 
     def getDXpi(self) -> object: # TODO change object to histogram
         return self.DXpi
 
-    def compute_histogram(self) -> None: # TODO use self.X and self.e to construct local historgram on features. store it in self.DXpi
-        self.sketch = DDSketch(self.e)
-        for x in self.X:
-            self.sketch.add(x)
+    def compute_histogram(self, number_of_bins:int) -> None: # TODO use self.X and self.e to construct local historgram on features. store it in self.DXpi
+        print("creating histogram for party {} 📊".format(self.idk))
+
+        self.sketch = []
+        self.histo = np.zeros((self.X.shape[1], number_of_bins))
+        for feature in range(self.X.shape[1]):
+            self.sketch.append(DDSketch(self.e))
+            for x in self.X[:,feature]:
+                self.sketch[feature].add(x)
+            
+            for i in range(1, number_of_bins+1):
+                self.histo[feature][i-1] = self.sketch[feature].get_quantile_value(i/number_of_bins)
 
 
 
-    def calculatedifferentials(self) -> Tuple[np.ndarray, np.ndarray]: # use the prediction from self.prediction to calculate the differentials and store them in self.grad & self.hess
-        pass
+
+    def calculatedifferentials(self, l:callable) -> Tuple[np.ndarray, np.ndarray]: # use the prediction from self.prediction to calculate the differentials and store them in self.grad & self.hess
+        l(self.y ,self.prediction)
 
     def recieve_model(self, model):
         self.model = model
 
     def predict(self): # TODO predict using the model and local histogram
         # use self.model to predict
-        pass
+        self.prediction = self.model.predict(self.histo)
 
     def sendDataCount(self):
         return self.X.shape[0]
