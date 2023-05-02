@@ -188,11 +188,11 @@ class BaseDDSketch(object):
         """Merge the given sketch into this one. After this operation, this sketch
         encodes the values that were added to both this and the input sketch.
         """
-        # if not self._mergeable(sketch):
-        #     raise ValueError(
-        #         "Cannot merge two DDSketches with different parameters, got %r and %r"
-        #         % (self._mapping.gamma, sketch._mapping.gamma)
-        #     )
+        if not self._mergeable(sketch):
+            raise ValueError(
+                "Cannot merge two DDSketches with different parameters, got %r and %r"
+                % (self._mapping.gamma, sketch._mapping.gamma)
+            )
 
         if sketch.count == 0:
             return
