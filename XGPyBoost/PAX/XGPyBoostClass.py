@@ -42,7 +42,7 @@ class XGPyBoostClass:
         y_proba = np.full(Y.shape, 1/Y.shape[1]) # inpreitial probabilities
         return Y, y_proba
 
-    def _fit_tree(self, X, grad, hess, params):
+    def _fit_tree(X, grad, hess, params) -> TreeNode:
         # initialize only root node
         root = TreeNode(np.full(X.shape[0], True))#np.arange(X.shape[0]))
         stack = [root]
@@ -79,3 +79,48 @@ class XGPyBoostClass:
                 threads.append(t)
             for t in threads:
                 t.join()
+
+
+    def predict(self, X):
+
+
+        probas = np.zeros((X.shape[0], self.n_classes, self.params.n_trees+1))
+
+        y_pred = np.zeros((X.shape[0], self.n_classes, self.params.n_trees+1))
+
+        for c in range(self.n_classes):
+            for i, tree in enumerate(self.trees[c]):
+                y_pred[:, c, i+1] = tree.predict(X)
+
+
+
+        # now y_preds are filled
+        for i in range(self.params.n_trees+1):
+            for rowid in range(y_pred.shape[0]):
+                row = y_pred[rowid, : , i]
+                wmax = max(row) # line 100 multiclass_obj.cu
+                wsum =0.0
+                for y in row : wsum +=  np.exp(y - wmax)
+                probas[rowid,:, i] = np.exp(row -wmax) / wsum
+
+        probas = np.average(probas, axis=2)
+
+        # tmp = [np.exp(x)/sum(np.exp(tmp)) for x in tmp]
+        # binary = np.where(p >= 0.5, 1, 0)
+        # binary_predictions[:, i+1] = binary
+        # binary_predictions[:, i+1]
+
+        # for i in range(X.shape[0]):
+        #     average = sum(probas[i, :])/len(probas[i, :])
+        #     probas[i, c] =  average
+
+        # TODO take the highest probability and return its location in the list
+        pass
+            # for i in range(X.shape[0]):
+            #     votes[i][c] = np.argmax(np.bincount(binary_predictions[i, :]))
+
+        highets_prob = np.zeros((X.shape[0], self.n_classes), dtype='int64')
+        for i in range(X.shape[0]):
+            highets_prob[i] = np.where(probas[i] == np.amax(probas[i]), 1, 0)
+
+        return [ np.argmax(probdrow ) for probdrow in highets_prob ]

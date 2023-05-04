@@ -28,18 +28,18 @@ class TreeNode:
         self.weight = None
         self.instances = instances
         self.depth = depth
-    
+
     # from lgbm c++ source
     def threshold_l1(self, w, alpha):
         reg_s = np.max((0.0, np.abs(w) - alpha))
         return np.sign(w)*reg_s
-    
+
     def calc_weight(self, G, H, params):
         w = -self.threshold_l1(G, params.alpha) / (H + params.lam)
 
         if params.max_delta_step != 0:
             w = np.clip(w, -params.max_delta_step, params.max_delta_step)
-        
+
         return w
 
     def calc_gain(self, G, H, params):
@@ -118,6 +118,7 @@ class TreeNode:
 
         # means there's no further gain
         if best_gain == 0:
+            pass
             # if root, don't check min_child_weightdef softprob_obj(y_true, y_pred):
     '''y_true = y, not one-hot-encoded just numbers '''
     # grad = np.zeros((y_pred.shape[0], y_pred.shape[1]), dtype=float) # for multi-class
@@ -127,7 +128,7 @@ class TreeNode:
 
 
     for r in range(y_pred.shape[0]):
-        
+
         p = np.exp(y_pred[r, :])/ sum(np.exp(y_pred[r, :]))
         target = y_true[r]
         for c in range(y_pred.shape[1]):
@@ -152,7 +153,7 @@ class TreeNode:
 
     # this is gonna be reallyy slow without threading
     def predict(self, X):
-        preds = np.apply_along_axis(self.predict_one, 1, X) 
+        preds = np.apply_along_axis(self.predict_one, 1, X)
         return preds
 
 class XGPyBoostBinary:
@@ -180,7 +181,7 @@ class XGPyBoostBinary:
         labels = self.le.fit_transform(y)
         Y = self._to_categorical(labels) # [X_size [n_classes]] labeled with integers 0 to n_classes-1 one-hot encoded
         del labels
-        
+
         y_proba = np.full(Y.shape, 1/Y.shape[1]) # initial probabilities
         return Y, y_proba[0,:]
 
@@ -195,7 +196,7 @@ class XGPyBoostBinary:
             if not node.is_leaf:
                 # add both children to front of list
                 stack[0:0] = [node.lchild, node.rchild]
-            
+
         return root
 
     def fit(self, X, y, base_margin = 0):
@@ -229,7 +230,7 @@ class XGPyBoostBinary:
 
     def predict_proba(self, X, base_margin = 0):
         return 1/(1+np.exp(-self.predict(X, base_margin)))
-        
+
 def mse_obj(y_true, y_pred):
     grad = y_pred - y_true
     hess = np.ones_like(y_true)
@@ -249,7 +250,7 @@ def softprob_obj(y_true, y_pred):
 
 
     for r in range(y_pred.shape[0]):
-        
+
         p = np.exp(y_pred[r, :])/ sum(np.exp(y_pred[r, :]))
         target = y_true[r]
         for c in range(y_pred.shape[1]):
