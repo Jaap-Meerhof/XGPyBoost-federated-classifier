@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from objectives import softprob
 from customddsketch import DDSketch
 from sklearn.metrics import accuracy_score
+import xgboost as xgb
 
 MAX_DEPTH = 6
 N_TREES = 20
@@ -31,11 +32,19 @@ def main():
             sketch[feature].add(x)
         splits.append([sketch[feature].get_quantile_value(i/N_BINS) for i in range(N_BINS)])
 
+
+
+    ### NORMAL xgboost
+    reg = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='exact', objective="multi:softmax", learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA) #tree_method="gpu_hist"
+    reg.fit(X_train,y_train)
+    preds_xgb = reg.predict(X_test)
+    print('tree ', accuracy_score(y_test, preds_xgb))
+    ### END NORMAL xgboost
+
     X_train = np.array_split(X_train, N_PARTICIPANTS)
     # X_test = np.array_split(X_test, N_PARTICIPANTS)
     y_train = np.array_split(y_train, N_PARTICIPANTS)
     # y_test = np.array_split(y_test, N_PARTICIPANTS)
-
     model = XGPyBoostClass(n_trees=N_TREES, obj=softprob, eta=ETA, gamma=GAMMA, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT)
 
     pax = PAX(model)
@@ -44,7 +53,7 @@ def main():
     preds_X = pax.predict(X_test)
     print('tree ', accuracy_score(y_test, preds_X))
 
-    pass
+
 
 
 

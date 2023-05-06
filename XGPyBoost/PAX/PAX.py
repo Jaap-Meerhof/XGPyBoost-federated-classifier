@@ -5,6 +5,8 @@ from typing import Tuple
 from treemodel import TreeNode
 from params import Params
 
+from histograms import histogram
+
 class PAX:
     def __init__(self, model:XGPyBoostClass) -> None:
         self.model = model
@@ -33,7 +35,7 @@ class PAX:
         for i in range(amount_participants): # line 4-8
             Pi:PAXParticipant = P[i]
             Pi.recieve_e(epsilonP[i]) # line 5
-            # Pi.compute_histogram(number_of_bins=number_of_bins) # line 7
+            Pi.compute_histogram(number_of_bins=number_of_bins) # line 7
             Pi.splits = splits
 
 
@@ -158,43 +160,58 @@ class PAXAggregator:
     def merge_hist(self, DA, GA, HA, emA):
         # dit moet compleet anders. op plekken waar DA[pi] hetzelfde is moet de ga+ga en ha+ha!!!!
         DMA = np.zeros((self.number_of_bins, DA[0].shape[1]))
-        DMA = [[] for i in range(DA[0].shape[1])]
-        GMA = np.zeros((self.number_of_bins, DA[0].shape[1]))
-        HMA = np.zeros((self.number_of_bins, DA[0].shape[1]))
+        DMA = np.ndarray([])
+        GMA = [[] for i in range(DA[0].shape[1])]
+        HMA = [[] for i in range(DA[0].shape[1])]
         n_participants = len(DA)
 
         #voor elke feature kijken welke splits unique splits er zijn en houd bij hoe vaak elke is genomen
+        DMA = DA[0]
+        for participant in range(1, len(DA)):
+            DMA = np.concatenate((DMA, DA[participant]),axis=0)
+
+        GMA = GA[0]
+        for participant in range(1, len(GA)):
+            GMA = np.concatenate((GMA, GA[participant]),axis=0)
+
+        HMA = HA[0]
+        for participant in range(1, len(HA)):
+            HMA = np.concatenate((HMA, HA[participant]),axis=0)
+
+        # tmpDA = np.array(DA)
+
+        # for feature in range(DA[0].shape[1]):
+        #     unique_elements, indices, count = np.unique(tmpDA[:,:,feature].flatten(), return_index=True, return_counts=True)
+        #     DMA[feature] = unique_elements
+
+        #     for element in unique_elements:
+        #         indices = np.where(tmpDA[:,:,feature].flatten() == element)
+        #         weight = len(indices)
+        #         tmpGA = np.array(GA)
+        #         gradients = tmpGA[:,:,feature].flatten()[indices]
+        #         gma = sum(gradients)/len(gradients)
+        #         tmpHA = np.array(HA)
+        #         hessians = tmpHA[:,:,feature].flatten()[indices]
+        #         hma = sum(hessians)/len(hessians)
+        #         DMA.append(element)
+        #         GMA.append(gma)
+        #         HMA.append(hma)
+        #         pass
+        #     pass
 
 
-        tmpDA = np.array(DA)
+        # for pi in range(n_participants):
+        #     pass
+        #     DMA = DMA + DA[pi]
+        # DMA = DMA/n_participants
 
-        for feature in range(DA[0].shape[0]):
-            unique_elements, indices, count = np.unique(tmpDA[:,:,feature].flatten(), return_index=True, return_counts=True)
-            DMA[feature] = unique_elements
+        # for pi in range(n_participants):
+        #     GMA = GMA + GA[pi]
+        # GMA = GMA/n_participants
 
-            for element in unique_elements:
-                indices = np.where(tmpDA[:,:,feature].flatten() == element)
-                tmpGA = np.array(GA)
-                gradients = tmpGA[:,:,feature].flatten()[indices]
-                GMA = sum(gradients)/len(gradients)
-
-
-                pass
-            pass
-
-
-        for pi in range(n_participants):
-            pass
-            DMA = DMA + DA[pi]
-        DMA = DMA/n_participants
-
-        for pi in range(n_participants):
-            GMA = GMA + GA[pi]
-        GMA = GMA/n_participants
-
-        for pi in range(n_participants):
-            HMA = HMA + HA[pi]
-        HMA = HMA/n_participants
+        # for pi in range(n_participants):
+        #     HMA = HMA + HA[pi]
+        # HMA = HMA/n_participants
 
         return DMA, GMA, HMA
 
@@ -218,6 +235,9 @@ class PAXParticipant:
 
     def getDXpi(self) -> object: # TODO change object to histogram
         return self.DXpi
+
+    def compute_histogram(self, splits):
+        pass
 
     def compute_histogram(self, number_of_bins:int) -> None: # TODO use self.X and self.e to construct local historgram on features. store it in self.DXpi
         print("creating histogram for party {} 📊".format(self.idk))
@@ -245,7 +265,7 @@ class PAXParticipant:
     def predict(self): # TODO predict using the model and local histogram
         # use self.model to predict
         # use self.splits to find in which bin X would be and take the middle of that bin. this will be fed into the prediction model
-        if self.DXpi is None:
+        if self.DXpi is None: # this puts X into the bins!
             interp_values = np.zeros(self.X.shape)
             for feature_i in range(self.X.shape[1]):
                 split_indices = np.searchsorted(self.splits[feature_i][:-1], self.X[:, feature_i], side='left') # leave out last quantile
