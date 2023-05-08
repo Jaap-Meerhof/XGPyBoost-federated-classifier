@@ -35,7 +35,7 @@ class PAX:
         for i in range(amount_participants): # line 4-8
             Pi:PAXParticipant = P[i]
             Pi.recieve_e(epsilonP[i]) # line 5
-            Pi.compute_histogram(number_of_bins=number_of_bins) # line 7
+            # Pi.compute_histogram(number_of_bins=number_of_bins) # line 7
             Pi.splits = splits
 
 

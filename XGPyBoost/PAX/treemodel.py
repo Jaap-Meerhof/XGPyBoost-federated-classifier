@@ -1,6 +1,9 @@
 import numpy as np
 import copy
 from params import Params
+import multiprocessing
+from threading import Thread
+import concurrent.futures
 
 class TreeNode:
     def __init__(self, instances, depth = 0):
@@ -12,18 +15,18 @@ class TreeNode:
         self.weight = None
         self.instances = instances
         self.depth = depth
-    
+
     # from lgbm c++ source
     def threshold_l1(self, w, alpha):
         reg_s = np.max((0.0, np.abs(w) - alpha))
         return np.sign(w)*reg_s
-    
+
     def calc_weight(self, G, H, params):
         w = -self.threshold_l1(G, params.alpha) / (H + params.lam)
 
         if params.max_delta_step != 0:
             w = np.clip(w, -params.max_delta_step, params.max_delta_step)
-        
+
         return w
 
     def calc_gain(self, G, H, params):
@@ -55,6 +58,8 @@ class TreeNode:
         rinstances = np.logical_and(X[:, self.feature] >= self.threshold, self.instances)
         return linstances, rinstances
 
+
+
     # exact greedy algorithm for enumerating all possibe splits (algorithm 1)
     def enumerate_splits(self, X, grad, hess, params):
         if self.depth >= params.max_depth:
@@ -75,6 +80,49 @@ class TreeNode:
         best_gain = 0.0
 
         # loop over feature columns
+
+        # def find_highest_gain(feature):
+        #     best_gain_feature = 0
+        #     threshold_feature = None
+        #     G_l, H_l, = 0, 0
+        #     # can speed this up significantly by pre-sorting columns
+        #     subset_ordered_idx = X_i[:, feature].argsort()
+        #     feature_ordered_subset = X_i[subset_ordered_idx, feature]
+        #     grad_ordered_subset = grad_i[subset_ordered_idx]
+        #     hess_ordered_subset = hess_i[subset_ordered_idx]
+
+        #     for i in range(feature_ordered_subset.shape[0]-1): #TODO Parralise
+        #         G_l += grad_ordered_subset[i]
+        #         H_l += hess_ordered_subset[i]
+        #         G_r = G - G_l
+        #         H_r = H - H_l
+
+        #         # don't consider split if it doesn't uniquely separate obs (i.e. ignore repeat values)
+        #         if feature_ordered_subset[i] == feature_ordered_subset[i+1]:
+        #             continue
+
+        #         gain = self.calc_split_gain(G, H, G_l, G_r, H_l, H_r, params)
+        #         if gain >= best_gain_feature:
+        #             best_gain_feature = gain
+        #             # use midpoint of between feature values as threshold
+        #             threshold_feature = (feature_ordered_subset[i] + feature_ordered_subset[i + 1]) / 2
+        #     return best_gain_feature, threshold_feature
+
+        # num_cores = multiprocessing.cpu_count()
+        # with concurrent.futures.ThreadPoolExecutor(max_workers=num_cores+2) as executor:
+
+        #     futures = [executor.submit(find_highest_gain, feature) for feature in range(X.shape[1])]
+
+        #     concurrent.futures.wait(futures)
+        #     result = [future.result() for future in futures]
+        #     for feature in range(X.shape[1]):
+        #         gain = result[feature][0]
+        #         if gain >= best_gain:
+        #             best_gain = gain
+        #             self.feature = feature
+        #             self.threshold = result[feature][1]
+        #     pass
+
         for feature in range(X.shape[1]): # TODO parralerisation
             G_l, H_l, = 0, 0
             # can speed this up significantly by pre-sorting columns
