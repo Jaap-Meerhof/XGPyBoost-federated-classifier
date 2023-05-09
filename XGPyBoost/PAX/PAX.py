@@ -4,6 +4,7 @@ from customddsketch import DDSketch
 from typing import Tuple
 from treemodel import TreeNode
 from params import Params
+from tqdm import tqdm
 
 from histograms import histogram
 
@@ -29,7 +30,8 @@ class PAX:
         A:PAXAggregator = PAXAggregator(P, n_classes=n_classes, model=self.model, number_of_bins=number_of_bins)
         self.A = A
 
-        A.create_global_null_model(n_classes, X[0].shape[0]) # line 1
+        # A.create_global_null_model(X[0].shape[0]) # line 1
+        A.create_global_null_model_known_probas(X[0].shape[0], y)
         epsilonP:np.ndarray[float] = A.compute_local_epsilon(eA) # line 2 & 6
 
         for i in range(amount_participants): # line 4-8
@@ -43,8 +45,8 @@ class PAX:
 
         # self.trees = [[] for i in range(n_classes)]
 
-
-        for t in range(1, T):
+        for t in tqdm(range(1, T), desc="building trees"):
+        # for t in range(1, T):
             DA = [] # line 11 # TODO initialize properly
             GA = [] # line 11 # TODO initialize properly
             HA = [] # line 11 # TODO initialize properly
@@ -61,7 +63,7 @@ class PAX:
             emA = min(epsilonP) # line 21
 
             DmA, GmA, HmA = A.merge_hist(DA, GA, HA, emA) # line 25
-            print("creating tree {}".format(t))
+            # print("creating tree {}".format(t))
             A.grow_tree(DmA, GmA, HmA)
 
 
@@ -77,9 +79,27 @@ class PAXAggregator:
         self.number_of_bins = number_of_bins
         self.trees = [] # features, numtrees
 
-    def create_global_null_model(self, n_classes:int, numfeatures:int) -> None:
-        for i in range(n_classes):
+    def create_global_null_model(self, numfeatures:int) -> None:
+        for i in range(self.n_classes):
             self.trees.append( [XGPyBoostClass.create_first_tree(numfeatures)] ) # features, numtrees
+
+    def create_global_null_model_known_probas(self, numfeatures:int, y) -> None:
+        """create first trees to have weights that use the probabilities of each respective class's probability.
+
+        Args:
+            y (_type_): y to retrieve the probailities of each class of
+        """
+        length = 0
+        count = np.zeros(self.n_classes)
+        for i in range(len(y)):
+            length =+ y[i].shape[0]
+            count =+ np.bincount(y[i])
+        
+        probas = count/length
+
+        for i in range(self.n_classes):
+            self.trees.append( [XGPyBoostClass.create_first_tree(numfeatures, probas[i])] )
+
 
     def compute_local_epsilon(self, eA:float)-> np.ndarray[float]:
         """Function compute_local_epsilon (line 29-40) from ong et al.
@@ -269,7 +289,7 @@ class PAXParticipant:
             interp_values = np.zeros(self.X.shape)
             for feature_i in range(self.X.shape[1]):
                 split_indices = np.searchsorted(self.splits[feature_i][:-1], self.X[:, feature_i], side='left') # leave out last quantile
-                interp_values[:, feature_i] = [(self.splits[feature_i][i-1] + self.splits[feature_i][i])/2 for i in split_indices ]
+                interp_values[:, feature_i] = [(self.splits[feature_i][i-1] + self.splits[feature_i][i])/2 for i in split_indices ] # dit slaat nergens op !!!!
             self.DXpi = interp_values
 
         for class_i in range(self.n_classes):

@@ -17,9 +17,9 @@ class XGPyBoostClass:
         self.obj = obj
         self.params = Params(n_trees, **kwargs)
 
-    def create_first_tree(num_features):
+    def create_first_tree(num_features, weight = 1):
         tree = TreeNode(np.full(num_features, True))
-        tree.weight = 1
+        tree.weight = weight
         tree.is_leaf = True
         return tree
 
@@ -63,7 +63,7 @@ class XGPyBoostClass:
         self.trees = [[] for i in range(self.n_classes)]
 
         def fit_tree_thread(c):
-            tree = self._fit_tree(X, grad[:, c], hess[:, c], self.params)
+            tree = self._fit_tree(X, deepcopy(grad[:, c]), deepcopy(hess[:, c]), deepcopy(self.params))
             self.trees[c].append(tree)
             preds[:, c] = tree.predict(X)
 
