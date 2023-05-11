@@ -5,8 +5,10 @@ from typing import Tuple
 from treemodel import TreeNode
 from params import Params
 from tqdm import tqdm
+from copy import deepcopy
 
 from histograms import histogram
+import time
 
 class PAX:
     def __init__(self, model:XGPyBoostClass) -> None:
@@ -45,7 +47,7 @@ class PAX:
 
         # self.trees = [[] for i in range(n_classes)]
 
-        for t in tqdm(range(1, T), desc="building trees"):
+        for t in tqdm(range(1, T), desc="> building trees"):
         # for t in range(1, T):
             DA = [] # line 11 # TODO initialize properly
             GA = [] # line 11 # TODO initialize properly
@@ -94,7 +96,7 @@ class PAXAggregator:
         for i in range(len(y)):
             length =+ y[i].shape[0]
             count =+ np.bincount(y[i])
-        
+
         probas = count/length
 
         for i in range(self.n_classes):
@@ -165,7 +167,16 @@ class PAXAggregator:
     def grow_tree(self, Dma, GmA, HmA):
 
         def fit_tree_thread(c):
-            tree = XGPyBoostClass._fit_tree(Dma, GmA[:, c], HmA[:, c], self.model.params)
+
+            myDma = deepcopy(Dma)
+            myGma = deepcopy(GmA[:, c])
+            myHma = deepcopy(HmA[:, c])
+            my_params = deepcopy(self.model.params)
+
+            # start = time.time()
+            tree = XGPyBoostClass._fit_tree(myDma, myGma, myHma, my_params) # THIS IS WHERE THE MULTITHREADING PROBLEM
+            # end = time.time()
+            # print(end-start)
             self.trees[c].append(tree)
 
         threads = []
@@ -176,6 +187,7 @@ class PAXAggregator:
             threads.append(t)
         for t in threads:
             t.join()
+        pass
 
     def merge_hist(self, DA, GA, HA, emA):
         # dit moet compleet anders. op plekken waar DA[pi] hetzelfde is moet de ga+ga en ha+ha!!!!
@@ -288,8 +300,15 @@ class PAXParticipant:
         if self.DXpi is None: # this puts X into the bins!
             interp_values = np.zeros(self.X.shape)
             for feature_i in range(self.X.shape[1]):
-                split_indices = np.searchsorted(self.splits[feature_i][:-1], self.X[:, feature_i], side='left') # leave out last quantile
-                interp_values[:, feature_i] = [(self.splits[feature_i][i-1] + self.splits[feature_i][i])/2 for i in split_indices ] # dit slaat nergens op !!!!
+                try:
+                    bin_indices = np.digitize(self.X[:, feature_i], self.splits[feature_i])-1
+                    for i, b in enumerate(bin_indices):
+                        if b == 0:
+                            interp_values[i, feature_i] = (self.splits[feature_i][0] + self.splits[feature_i][1])/2
+                        else:
+                            interp_values[:, feature_i] = [(self.splits[feature_i][i-1] + self.splits[feature_i][i])/2 for i in bin_indices ] # dit slaat nergens op !!!!
+                except ValueError: # all bins are the same, so just take the first one for all
+                    interp_values[:, feature_i] = [self.splits[feature_i][0] for x in self.X[:, feature_i] ]
             self.DXpi = interp_values
 
         for class_i in range(self.n_classes):

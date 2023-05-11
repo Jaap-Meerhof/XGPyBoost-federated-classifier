@@ -7,6 +7,9 @@ from sklearn.model_selection import train_test_split
 from sklearn import datasets
 from XGPyBoostMulti import *
 
+
+import cProfile
+
 np.random.seed(1234)
 
 MAX_DEPTH = 6
@@ -51,4 +54,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    cProfile.run('main()', sort='cumtime')

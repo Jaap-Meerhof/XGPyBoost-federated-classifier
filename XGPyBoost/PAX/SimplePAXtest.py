@@ -12,6 +12,12 @@ import matplotlib.pyplot as plt
 from xgboost import XGBClassifier
 
 from keras.datasets import cifar10
+import utils
+import pickle
+import os
+
+import cProfile # DEBUG
+import time  # DEBUG
 
 MAX_DEPTH = 6
 N_TREES = 10
@@ -20,9 +26,9 @@ GAMMA = 0.3 #std=0.3
 MIN_CHILD_WEIGHT = 1 # std=1
 REG_ALPHA=0 #std =0
 REG_LAMBDA=1
-N_PARTICIPANTS = 7
+N_PARTICIPANTS = 1
 
-N_BINS = 16
+N_BINS = 255
 EA = 1/N_BINS
 def main():
     # test_cifar10()
@@ -39,37 +45,33 @@ def test_MNIST():
     print(targets[0])
     images = images.reshape(1797, 8*8)
     X_train, X_test, y_train, y_test = train_test_split(images, targets, test_size=0.2)
+    run_both(X_train, X_test, y_train, y_test)
+
+def run_both(X_train, X_test, y_train, y_test):
+    print("> running normal xgboost first....")
     model = XGBClassifier(max_depth=MAX_DEPTH, tree_method='exact', objective="multi:softmax",
                            learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA)
     model.fit(X_train, y_train)
     y_pred=model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
-    print("Accuracy xgb: %.2f%%" % (accuracy))
-    # print()
-    sketch:list[DDSketch] = []
-    splits:list[list[float]] = []
-    #TODO make splits not using quantiles, but by using 255 same sized histograms.
-    for feature in range(X_train.shape[1]):
-        sketch.append(DDSketch(EA))
-        df = pd.DataFrame(X_train[:, feature])
-        for x in X_train[:,feature]:
-            sketch[feature].add(x)
-        splits.append([sketch[feature].get_quantile_value(i/N_BINS) for i in range(N_BINS)])
-        pass
-    # splits = data_to_histo(X_train)
+    print("> Accuracy normal XGBoost: %.2f" % (accuracy))
 
-    splits = [ np.arange(-0.5, 17, 1.0) for i in range(X_train.shape[1])]
+
+    splits:list[list[float]] = utils.find_splits(X_train, EA, N_BINS=N_BINS)
 
     X_train = np.array_split(X_train, N_PARTICIPANTS)
     y_train = np.array_split(y_train, N_PARTICIPANTS)
-
+    print("> running federated XGBoost...")
     model = XGPyBoostClass(n_trees=N_TREES, obj=softprob, eta=ETA, gamma=GAMMA, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT)
-
     pax = PAX(model)
     pax.fit(X_train, y_train, EA, N_TREES, softprob, N_BINS, splits)
 
     preds_X = pax.predict(X_test)
-    print('my python acc: ', accuracy_score(y_test, preds_X))
+    print("> Accuracy normal XGBoost: %.2f" % (accuracy_score(y_test, preds_X)))
+
+def test_iris():
+    iris = datasets.load_iris()
+
 
 def test_cifar10():
     print("testing cifar10")
@@ -97,17 +99,18 @@ def test_cifar10():
     # print("Accuracy xgb: %.2f%%" % (accuracy))
      # 94% acccuracy
     X_train = X_train[:10000]
-    sketch:list[DDSketch] = []
-    splits:list[list[float]] = []
-    #TODO make splits not using quantiles, but by using 255 same sized histograms.
-    for feature in range(X_train.shape[1]):
-        sketch.append(DDSketch(EA))
-        df = pd.DataFrame(X_train[:, feature])
-        for x in X_train[:,feature]:
-            sketch[feature].add(x)
-        splits.append([sketch[feature].get_quantile_value(i/N_BINS) for i in range(N_BINS)])
-        pass
-    # splits = data_to_histo(X_train)
+    file_path = 'cifar10.kl'
+    splits:list[list[float]] = None
+
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            splits = pickle.load(file)
+    else:
+        splits = utils.find_splits(X_train, EA, N_BINS=N_BINS)
+        with open('splits.pkl', 'wb') as file:
+            pickle.dump(splits)
+
+
     print("sketching done")
     X_train = np.array_split(X_train, N_PARTICIPANTS)
     y_train = np.array_split(y_train, N_PARTICIPANTS)
@@ -120,17 +123,37 @@ def test_cifar10():
     preds_X = pax.predict(X_test)
     print('my python acc: ', accuracy_score(y_test, preds_X))
 
-
-
-
-
 def test_airline():
     print("testing airline dataset")
-    df1 = pd.read_csv("../../datasets/kaggle/airline/DelayedFlights.csv", delimiter=',', nrows=1000)
+    df1 = pd.read_csv("datasets/kaggle/airline/DelayedFlights.csv", delimiter=',', nrows=100000)
+    df1 = df1.drop("Unnamed: 0",1)
     df1.dataframeName = 'DelayedFlights.csv'
     nRow, nCol = df1.shape
+    leaky_features = ["Year", "Diverted", "ArrTime", "ActualElapsedTime", "AirTime", "ActualElapsedTime", "AirTime", "ArrDelay", "TaxiIn", "CarrierDelay", "WeatherDelay", "NASDelay", "SecurityDelay","LateAircraftDelay", "CancellationCode"]
+    target = ["LateAircraftDelay"]
+    features = [x for x in df1.columns if (x != target[0]) & (x not in leaky_features) & (len(df1[x].unique().tolist()) > 1)]
 
 
+    def get_dtypes(data,features):
+        output = {}
+        for f in features:
+            dtype = str(data[f].dtype)
+            if dtype not in output.keys(): output[dtype] = [f]
+            else: output[dtype] += [f]
+        return output
+    dtypes = get_dtypes(df1,features)
+    categories = ["Month", "DayOfWeek", "DayofMonth"]
+    categories += dtypes["object"]
+    numerics = [i for i in dtypes["int64"] if i not in categories]
+    numerics += dtypes["float64"]
+    for numeric in numerics: df1[numeric] = df1[numeric].fillna(0)
+    categories.remove("TailNum")
+    # from pandas import get_dummies
+    # from pandas import concat
+    # one_hot_encoded = get_dummies(df1[categories].fillna("Unknown"))
+    # X = concat([one_hot_encoded, df1[numerics].fillna(0)],1)
+    X = df1[numerics, categories]
+    pass
 
 
 def test_make_classification():
@@ -140,32 +163,7 @@ def test_make_classification():
     X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.30)
     X_train = X_train[:10000]
 
-    sketch:list[DDSketch] = []
-    splits:list[list[float]] = []
-    for feature in range(X_train.shape[1]):
-        sketch.append(DDSketch(EA))
-        for x in X_train[:,feature]:
-            sketch[feature].add(x)
-        splits.append([sketch[feature].get_quantile_value(i/N_BINS) for i in range(N_BINS)])
-
-
-
-    ### NORMAL xgboost
-    reg = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='exact', objective="multi:softmax", learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA) #tree_method="gpu_hist"
-    reg.fit(X_train,y_train)
-    preds_xgb = reg.predict(X_test)
-    print('tree ', accuracy_score(y_test, preds_xgb))
-    ### END NORMAL xgboost
-
-    X_train = np.array_split(X_train, N_PARTICIPANTS)
-    y_train = np.array_split(y_train, N_PARTICIPANTS)
-    model = XGPyBoostClass(n_trees=N_TREES, obj=softprob, eta=ETA, gamma=GAMMA, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT)
-
-    pax = PAX(model)
-    pax.fit(X_train, y_train, EA, N_TREES, softprob, N_BINS, splits)
-
-    preds_X = pax.predict(X_test)
-    print('tree ', accuracy_score(y_test, preds_X))
+    run_both(X_train, X_test, y_train, y_test)
 
 
 def data_to_histo(X):
@@ -187,6 +185,5 @@ def data_to_histo(X):
     return splits
 
 if __name__ == "__main__":
-
-
-    main()
+    # main()
+    cProfile.run('main()', sort='cumtime')
