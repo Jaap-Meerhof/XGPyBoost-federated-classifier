@@ -28,13 +28,14 @@ REG_ALPHA=0 #std =0
 REG_LAMBDA=1
 N_PARTICIPANTS = 1
 
-N_BINS = 255
+N_BINS = 400
 EA = 1/N_BINS
 def main():
     # test_cifar10()
-    test_MNIST()
+    # test_MNIST()
     # test_airline()
-    # test_make_classification()
+    test_iris()
+    test_make_classification()
 
 def test_MNIST():
     print("testing MNIST")
@@ -67,10 +68,16 @@ def run_both(X_train, X_test, y_train, y_test):
     pax.fit(X_train, y_train, EA, N_TREES, softprob, N_BINS, splits)
 
     preds_X = pax.predict(X_test)
-    print("> Accuracy normal XGBoost: %.2f" % (accuracy_score(y_test, preds_X)))
+    print("> Accuracy federated XGBoost: %.2f" % (accuracy_score(y_test, preds_X)))
 
 def test_iris():
     iris = datasets.load_iris()
+    pass
+    X = iris.data
+    y = iris.target
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    run_both(X_train, X_test, y_train, y_test)
+    pass
 
 
 def test_cifar10():
@@ -161,8 +168,8 @@ def test_make_classification():
     n_classes = 5
     X, y = make_classification(n_samples=int(10000) , n_features=20, n_informative=4, n_redundant=0, n_classes=n_classes, random_state=42)
     X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.30)
-    X_train = X_train[:10000]
-
+    X_train = X_train[:1000]
+    y_train = y_train[:1000]
     run_both(X_train, X_test, y_train, y_test)
 
 
@@ -185,5 +192,5 @@ def data_to_histo(X):
     return splits
 
 if __name__ == "__main__":
-    # main()
-    cProfile.run('main()', sort='cumtime')
+    main()
+    # cProfile.run('main()', sort='cumtime')
