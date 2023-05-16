@@ -40,7 +40,7 @@ class XGPyBoostClass:
         y_proba = np.full(Y.shape, 1/Y.shape[1]) # inpreitial probabilities
         return Y, y_proba
 
-    def _fit_tree(X, grad, hess, params) -> TreeNode:
+    def _fit_tree(X, grad, hess, params:Params) -> TreeNode:
         # initialize only root node
         root = TreeNode(np.full(X.shape[0], True))#np.arange(X.shape[0]))
         stack = [root]
@@ -102,20 +102,6 @@ class XGPyBoostClass:
                 probas[rowid,:, i] = np.exp(row -wmax) / wsum
 
         probas = np.average(probas, axis=2)
-
-        # tmp = [np.exp(x)/sum(np.exp(tmp)) for x in tmp]
-        # binary = np.where(p >= 0.5, 1, 0)
-        # binary_predictions[:, i+1] = binary
-        # binary_predictions[:, i+1]
-
-        # for i in range(X.shape[0]):
-        #     average = sum(probas[i, :])/len(probas[i, :])
-        #     probas[i, c] =  average
-
-        # TODO take the highest probability and return its location in the list
-        pass
-            # for i in range(X.shape[0]):
-            #     votes[i][c] = np.argmax(np.bincount(binary_predictions[i, :]))
 
         highets_prob = np.zeros((X.shape[0], self.n_classes), dtype='int64')
         for i in range(X.shape[0]):

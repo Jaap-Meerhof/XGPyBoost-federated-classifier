@@ -30,6 +30,9 @@ N_PARTICIPANTS = 1
 
 N_BINS = 400
 EA = 1/N_BINS
+
+params = Params(n_trees=N_TREES, max_depth=MAX_DEPTH, eta=ETA, lam=REG_LAMBDA, 
+                alpha=REG_ALPHA, gamma=GAMMA, min_child_weight=MIN_CHILD_WEIGHT, max_delta_step=0, objective=softprob )
 def main():
     # test_cifar10()
     # test_MNIST()
@@ -46,12 +49,12 @@ def test_MNIST():
     print(targets[0])
     images = images.reshape(1797, 8*8)
     X_train, X_test, y_train, y_test = train_test_split(images, targets, test_size=0.2)
-    run_both(X_train, X_test, y_train, y_test)
+    run_both(X_train, X_test, y_train, y_test, params)
 
-def run_both(X_train, X_test, y_train, y_test):
+def run_both(X_train, X_test, y_train, y_test, params:Params):
     print("> running normal xgboost first....")
-    model = XGBClassifier(max_depth=MAX_DEPTH, tree_method='exact', objective="multi:softmax",
-                           learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA)
+    model = XGBClassifier(max_depth=params.max_depth, tree_method='exact', objective="multi:softmax",
+                           learning_rate=params.eta, n_estimators=params.n_trees, gamma=params.gamma, reg_alpha=params.alpha, reg_lambda=params.lam)
     model.fit(X_train, y_train)
     y_pred=model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
@@ -59,14 +62,13 @@ def run_both(X_train, X_test, y_train, y_test):
 
 
     # splits:list[list[float]] = utils.find_splits(X_train, EA, N_BINS=N_BINS)
-    splits:list[list[float]] = data_to_histo(X_train)
+    splits:list[list[float]] = utils.data_to_histo(X_train)
 
     X_train = np.array_split(X_train, N_PARTICIPANTS)
     y_train = np.array_split(y_train, N_PARTICIPANTS)
     print("> running federated XGBoost...")
-    model = XGPyBoostClass(n_trees=N_TREES, obj=softprob, eta=ETA, gamma=GAMMA, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT)
-    pax = PAX(model)
-    pax.fit(X_train, y_train, EA, N_TREES, softprob, N_BINS, splits)
+    pax = PAX(params)
+    pax.fit(X_train, y_train, splits)
 
     preds_X = pax.predict(X_test)
     print("> Accuracy federated XGBoost: %.2f" % (accuracy_score(y_test, preds_X)))
@@ -77,7 +79,7 @@ def test_iris():
     X = iris.data
     y = iris.target
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-    run_both(X_train, X_test, y_train, y_test)
+    run_both(X_train, X_test, y_train, y_test, params)
     pass
 
 
@@ -171,26 +173,7 @@ def test_make_classification():
     X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.30)
     X_train = X_train[:1000]
     y_train = y_train[:1000]
-    run_both(X_train, X_test, y_train, y_test)
-
-
-def data_to_histo(X):
-    splits: list[list[float]] = []
-    for feature in range(X.shape[1]):
-        range_min = np.min(X)
-        range_max = np.max(X)
-        num_bins = 255
-        bin_edges = np.linspace(range_min, range_max, num=num_bins-1)
-        bin_indices = np.digitize(X[:, feature], bin_edges) -1
-        bin_counts = np.bincount(bin_indices, minlength=num_bins)
-        # plt.bar(range(num_bins), bin_counts, align='center')
-        # plt.xticks(range(num_bins))
-        # plt.xlabel('Bins')
-        # plt.ylabel('Frequency')
-        # plt.title('Histogram')
-        # plt.show()
-        splits.append(bin_edges)
-    return splits
+    run_both(X_train, X_test, y_train, y_test, params)
 
 if __name__ == "__main__":
     main()

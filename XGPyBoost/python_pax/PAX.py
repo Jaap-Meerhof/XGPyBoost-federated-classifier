@@ -10,7 +10,7 @@ from copy import deepcopy
 from histograms import histogram
 import time
 from enum import Enum
-
+import utils
 class Sketch_type(Enum):
 
     NORMAL = 0
@@ -18,10 +18,10 @@ class Sketch_type(Enum):
     DDSKETCH = 1
 
 class PAX:
-    def __init__(self, model:XGPyBoostClass) -> None:
-        self.model = model
+    def __init__(self, params:Params) -> None:
+        self.params:Params = params
 
-    def fit(self, X:np.ndarray, y:np.ndarray, eA:float, T:int, l:callable, number_of_bins:int, splits:list[list[float]]=None) -> None:
+    def fit(self, X:np.ndarray, y:np.ndarray, splits:list[list[float]]=None) -> None:
         """Fit the model in a federated fashion
 
         Args:
@@ -32,16 +32,25 @@ class PAX:
             T (int): Maximum Number of Training Rounds
             l (callable): Model Loss Function
         """
+        splits:list[list[float]] = None
+        type:Sketch_type = Sketch_type(Sketch_type.DDSKETCH)
+        if type is Sketch_type.DDSKETCH:
+            splits = utils.find_splits(X, self.params.eA, self.params.n_bins)
+        elif type is Sketch_type.NORMAL:
+            splits = utils.data_to_histo(X)
+        else:
+            raise RuntimeError("implement other type here")
+
         n_classes = np.amax(y[0]) + 1
 
         amount_participants = len(X)
-        P:list[PAXParticipant] = [PAXParticipant(i, X[i], y[i], T) for i in range(amount_participants)]
-        A:PAXAggregator = PAXAggregator(P, n_classes=n_classes, model=self.model, number_of_bins=number_of_bins)
+        P:list[PAXParticipant] = [PAXParticipant(i, X[i], y[i], self.params.n_trees) for i in range(amount_participants)]
+        A:PAXAggregator = PAXAggregator(P, n_classes=n_classes, params=self.params, number_of_bins=self.params.n_bins)
         self.A = A
 
         # A.create_global_null_model(X[0].shape[0]) # line 1
         A.create_global_null_model_known_probas(X[0].shape[0], y)
-        epsilonP:np.ndarray[float] = A.compute_local_epsilon(eA) # line 2 & 6
+        epsilonP:np.ndarray[float] = A.compute_local_epsilon(self.params.eA) # line 2 & 6
 
         for i in range(amount_participants): # line 4-8
             Pi:PAXParticipant = P[i]
@@ -54,7 +63,7 @@ class PAX:
 
         # self.trees = [[] for i in range(n_classes)]
 
-        for t in tqdm(range(1, T), desc="> building trees"):
+        for t in tqdm(range(1, self.params.n_trees), desc="> building trees"):
         # for t in range(1, T):
             DA = [] # line 11 # TODO initialize properly
             GA = [] # line 11 # TODO initialize properly
@@ -63,7 +72,7 @@ class PAX:
                 Pi:PAXParticipant = P[i]
                 Pi.recieve_model(A.getmodel())
                 Pi.predict()
-                gpi, hpi = Pi.calculatedifferentials(l)
+                gpi, hpi = Pi.calculatedifferentials(self.params.objective)
                 DXpi = Pi.getDXpi()
                 DA.append(DXpi) # line 17 # TODO take union
                 GA.append(gpi) # line 18 # TODO take union
@@ -81,10 +90,10 @@ class PAX:
 
 class PAXAggregator:
 
-    def __init__(self, P:list, n_classes, model:XGPyBoostClass, number_of_bins:int) -> None:
+    def __init__(self, P:list, n_classes, params:Params, number_of_bins:int) -> None:
         self.P = P
         self.n_classes = n_classes
-        self.model = model
+        self.params = params
         self.number_of_bins = number_of_bins
         self.trees = [] # features, numtrees
 
@@ -130,9 +139,9 @@ class PAXAggregator:
         return E
 
     def predict_proba(self, X):
-        probas = np.zeros((X.shape[0], self.n_classes, self.model.params.n_trees))
+        probas = np.zeros((X.shape[0], self.n_classes, self.params.n_trees))
 
-        y_pred = np.zeros((X.shape[0], self.n_classes, self.model.params.n_trees))
+        y_pred = np.zeros((X.shape[0], self.n_classes, self.params.n_trees))
 
         for c in range(self.n_classes):
             for i, tree in enumerate(self.trees[c]):
@@ -141,7 +150,7 @@ class PAXAggregator:
 
 
         # now y_preds are filled
-        for i in range(self.model.params.n_trees):
+        for i in range(self.params.n_trees):
             for rowid in range(y_pred.shape[0]):
                 row = y_pred[rowid, : , i]
                 wmax = max(row) # line 100 multiclass_obj.cu
@@ -169,7 +178,7 @@ class PAXAggregator:
             myDma = deepcopy(Dma)
             myGma = deepcopy(GmA[:, c])
             myHma = deepcopy(HmA[:, c])
-            my_params = deepcopy(self.model.params)
+            my_params = deepcopy(self.params)
 
             # start = time.time()
             tree = XGPyBoostClass._fit_tree(myDma, myGma, myHma, my_params) # THIS IS WHERE THE MULTITHREADING PROBLEM
@@ -208,41 +217,6 @@ class PAXAggregator:
         for participant in range(1, len(HA)):
             HMA = np.concatenate((HMA, HA[participant]),axis=0)
 
-        # tmpDA = np.array(DA)
-
-        # for feature in range(DA[0].shape[1]):
-        #     unique_elements, indices, count = np.unique(tmpDA[:,:,feature].flatten(), return_index=True, return_counts=True)
-        #     DMA[feature] = unique_elements
-
-        #     for element in unique_elements:
-        #         indices = np.where(tmpDA[:,:,feature].flatten() == element)
-        #         weight = len(indices)
-        #         tmpGA = np.array(GA)
-        #         gradients = tmpGA[:,:,feature].flatten()[indices]
-        #         gma = sum(gradients)/len(gradients)
-        #         tmpHA = np.array(HA)
-        #         hessians = tmpHA[:,:,feature].flatten()[indices]
-        #         hma = sum(hessians)/len(hessians)
-        #         DMA.append(element)
-        #         GMA.append(gma)
-        #         HMA.append(hma)
-        #         pass
-        #     pass
-
-
-        # for pi in range(n_participants):
-        #     pass
-        #     DMA = DMA + DA[pi]
-        # DMA = DMA/n_participants
-
-        # for pi in range(n_participants):
-        #     GMA = GMA + GA[pi]
-        # GMA = GMA/n_participants
-
-        # for pi in range(n_participants):
-        #     HMA = HMA + HA[pi]
-        # HMA = HMA/n_participants
-
         return DMA, GMA, HMA
 
 
@@ -261,7 +235,6 @@ class PAXParticipant:
         self.model:list[TreeNode] = None  # feature, trees
         self.splits:list[list[float]]= None
         self.prediction:np.array[list[float]] = np.zeros((self.n_classes, X.shape[0])) # n_classes, X.shape[0]
-
 
     def getDXpi(self) -> object: # TODO change object to histogram
         return self.DXpi

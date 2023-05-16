@@ -27,3 +27,21 @@ def find_splits(X, EA:float, N_BINS:int):
         splits[-1].insert(0, my_min)
         splits[-1].append(my_max)
     return splits
+
+def data_to_histo(X):
+    splits: list[list[float]] = []
+    for feature in range(X.shape[1]):
+        range_min = np.min(X)
+        range_max = np.max(X)
+        num_bins = 255
+        bin_edges = np.linspace(range_min, range_max, num=num_bins-1)
+        bin_indices = np.digitize(X[:, feature], bin_edges) -1
+        bin_counts = np.bincount(bin_indices, minlength=num_bins)
+        # plt.bar(range(num_bins), bin_counts, align='center')
+        # plt.xticks(range(num_bins))
+        # plt.xlabel('Bins')
+        # plt.ylabel('Frequency')
+        # plt.title('Histogram')
+        # plt.show()
+        splits.append(bin_edges)
+    return splits
