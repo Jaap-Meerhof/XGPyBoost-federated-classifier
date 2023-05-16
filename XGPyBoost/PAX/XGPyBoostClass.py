@@ -5,8 +5,6 @@ from copy import deepcopy
 from threading import Thread
 from treemodel import *
 
-
-
 class XGPyBoostClass:
     def __init__(
         self,

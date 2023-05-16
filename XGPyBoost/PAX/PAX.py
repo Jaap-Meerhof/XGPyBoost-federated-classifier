@@ -9,6 +9,13 @@ from copy import deepcopy
 
 from histograms import histogram
 import time
+from enum import Enum
+
+class Sketch_type(Enum):
+
+    NORMAL = 0
+
+    DDSKETCH = 1
 
 class PAX:
     def __init__(self, model:XGPyBoostClass) -> None:
@@ -122,7 +129,7 @@ class PAXAggregator:
             E.append(ei)
         return E
 
-    def predict(self, X):
+    def predict_proba(self, X):
         probas = np.zeros((X.shape[0], self.n_classes, self.model.params.n_trees))
 
         y_pred = np.zeros((X.shape[0], self.n_classes, self.model.params.n_trees))
@@ -143,20 +150,11 @@ class PAXAggregator:
                 probas[rowid,:, i] = np.exp(row -wmax) / wsum
 
         probas = np.average(probas, axis=2)
-
-        # tmp = [np.exp(x)/sum(np.exp(tmp)) for x in tmp]
-        # binary = np.where(p >= 0.5, 1, 0)
-        # binary_predictions[:, i+1] = binary
-        # binary_predictions[:, i+1]
-
-        # for i in range(X.shape[0]):
-        #     average = sum(probas[i, :])/len(probas[i, :])
-        #     probas[i, c] =  average
-
-        # TODO take the highest probability and return its location in the list
-        pass
-            # for i in range(X.shape[0]):
-            #     votes[i][c] = np.argmax(np.bincount(binary_predictions[i, :]))
+        return probas
+        
+    
+    def predict(self, X):
+        probas = self.predict_proba(X)
 
         highets_prob = np.zeros((X.shape[0], self.n_classes), dtype='int64')
         for i in range(X.shape[0]):
@@ -271,18 +269,24 @@ class PAXParticipant:
     def compute_histogram(self, splits):
         pass
 
-    def compute_histogram(self, number_of_bins:int) -> None: # TODO use self.X and self.e to construct local historgram on features. store it in self.DXpi
-        print("creating histogram for party {} 📊".format(self.idk))
+    def compute_histogram(self, number_of_bins:int, sketchtype:Sketch_type = Sketch_type.DDSKETCH) -> None: # TODO use self.X and self.e to construct local historgram on features. store it in self.DXpi
+        
+        match sketchtype:
+            case Sketch_type.DDSKETCH:
+                print("creating histogram for party {} 📊".format(self.idk))
 
-        self.sketch = []
-        self.histo = np.zeros((self.X.shape[1], number_of_bins))
-        for feature in range(self.X.shape[1]):
-            self.sketch.append(DDSketch(self.e))
-            for x in self.X[:,feature]:
-                self.sketch[feature].add(x)
+                self.sketch = []
+                self.histo = np.zeros((self.X.shape[1], number_of_bins))
+                for feature in range(self.X.shape[1]):
+                    self.sketch.append(DDSketch(self.e))
+                    for x in self.X[:,feature]:
+                        self.sketch[feature].add(x)
 
-            for i in range(1, number_of_bins+1):
-                self.histo[feature][i-1] = self.sketch[feature].get_quantile_value(i/number_of_bins)
+                    for i in range(1, number_of_bins+1):
+                        self.histo[feature][i-1] = self.sketch[feature].get_quantile_value(i/number_of_bins)
+            case Sketch_type.NORMAL:
+                print("creating normal histogram with equal bins")
+
 
 
 
@@ -306,7 +310,7 @@ class PAXParticipant:
                         if b == 0:
                             interp_values[i, feature_i] = (self.splits[feature_i][0] + self.splits[feature_i][1])/2
                         else:
-                            interp_values[:, feature_i] = [(self.splits[feature_i][i-1] + self.splits[feature_i][i])/2 for i in bin_indices ] # dit slaat nergens op !!!!
+                            interp_values[:, feature_i] = [(self.splits[feature_i][i-1] + self.splits[feature_i][i])/2 for i in bin_indices ]
                 except ValueError: # all bins are the same, so just take the first one for all
                     interp_values[:, feature_i] = [self.splits[feature_i][0] for x in self.X[:, feature_i] ]
             self.DXpi = interp_values

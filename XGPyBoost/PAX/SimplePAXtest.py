@@ -20,7 +20,7 @@ import cProfile # DEBUG
 import time  # DEBUG
 
 MAX_DEPTH = 6
-N_TREES = 10
+N_TREES = 30
 ETA = 1
 GAMMA = 0.3 #std=0.3
 MIN_CHILD_WEIGHT = 1 # std=1
@@ -34,7 +34,7 @@ def main():
     # test_cifar10()
     # test_MNIST()
     # test_airline()
-    test_iris()
+    # test_iris()
     test_make_classification()
 
 def test_MNIST():
@@ -58,7 +58,8 @@ def run_both(X_train, X_test, y_train, y_test):
     print("> Accuracy normal XGBoost: %.2f" % (accuracy))
 
 
-    splits:list[list[float]] = utils.find_splits(X_train, EA, N_BINS=N_BINS)
+    # splits:list[list[float]] = utils.find_splits(X_train, EA, N_BINS=N_BINS)
+    splits:list[list[float]] = data_to_histo(X_train)
 
     X_train = np.array_split(X_train, N_PARTICIPANTS)
     y_train = np.array_split(y_train, N_PARTICIPANTS)
