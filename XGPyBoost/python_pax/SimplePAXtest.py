@@ -20,7 +20,7 @@ import cProfile # DEBUG
 import time  # DEBUG
 
 MAX_DEPTH = 6
-N_TREES = 30
+N_TREES = 20
 ETA = 1
 GAMMA = 0.3 #std=0.3
 MIN_CHILD_WEIGHT = 1 # std=1
@@ -31,13 +31,14 @@ N_PARTICIPANTS = 1
 N_BINS = 400
 EA = 1/N_BINS
 
-params = Params(n_trees=N_TREES, max_depth=MAX_DEPTH, eta=ETA, lam=REG_LAMBDA, 
+params = Params(n_trees=N_TREES, max_depth=MAX_DEPTH, eta=ETA, lam=REG_LAMBDA,
                 alpha=REG_ALPHA, gamma=GAMMA, min_child_weight=MIN_CHILD_WEIGHT, max_delta_step=0, objective=softprob )
 def main():
     # test_cifar10()
     # test_MNIST()
     # test_airline()
     # test_iris()
+    test_purchase_100()
     test_make_classification()
 
 def test_MNIST():
@@ -120,7 +121,6 @@ def test_cifar10():
         with open('splits.pkl', 'wb') as file:
             pickle.dump(splits)
 
-
     print("sketching done")
     X_train = np.array_split(X_train, N_PARTICIPANTS)
     y_train = np.array_split(y_train, N_PARTICIPANTS)
@@ -165,11 +165,33 @@ def test_airline():
     X = df1[numerics, categories]
     pass
 
+def test_purchase_100():
+    pass
+    MAX_DEPTH = 12
+    N_TREES = 300
+    ETA = 0.1
+    GAMMA = 0.3 #std=0.3
+    MIN_CHILD_WEIGHT = 1 # std=1
+    REG_ALPHA=0.1 #std =0
+    REG_LAMBDA=0.1
+    N_PARTICIPANTS = 1
+
+    N_BINS = 400
+    EA = 1/N_BINS
+    data = np.load('/home/jaap/Documents/tmp/purchase-100/purchase100.npz')
+    features = data['features']
+    labels = data['labels']
+    X_train, X_test, y_train, y_test = train_test_split(features,labels, test_size=0.30)
+    myparams = Params(n_trees=N_TREES, max_depth=MAX_DEPTH, eta=ETA, lam=REG_LAMBDA,
+                alpha=REG_ALPHA, gamma=GAMMA, min_child_weight=MIN_CHILD_WEIGHT, max_delta_step=0, objective=softprob )
+    run_both(X_train, X_test, y_train, y_test, myparams)
+
+    pass
 
 def test_make_classification():
     print("starting tests")
     n_classes = 5
-    X, y = make_classification(n_samples=int(10000) , n_features=20, n_informative=4, n_redundant=0, n_classes=n_classes, random_state=42)
+    X, y = make_classification(n_samples=int(10000) , n_features=20, n_informative=4, n_redundant=0, n_classes=n_classes, random_state=420)
     X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.30)
     X_train = X_train[:1000]
     y_train = y_train[:1000]

@@ -32,14 +32,15 @@ class PAX:
             T (int): Maximum Number of Training Rounds
             l (callable): Model Loss Function
         """
-        splits:list[list[float]] = None
-        type:Sketch_type = Sketch_type(Sketch_type.DDSKETCH)
-        if type is Sketch_type.DDSKETCH:
-            splits = utils.find_splits(X, self.params.eA, self.params.n_bins)
-        elif type is Sketch_type.NORMAL:
-            splits = utils.data_to_histo(X)
-        else:
-            raise RuntimeError("implement other type here")
+        # splits:list[list[float]] = None
+        # type:Sketch_type = Sketch_type(Sketch_type.DDSKETCH)
+        if splits is None:
+            if type is Sketch_type.DDSKETCH:
+                splits = utils.find_splits(X, self.params.eA, self.params.n_bins)
+            elif type is Sketch_type.NORMAL:
+                splits = utils.data_to_histo(X)
+            else:
+                raise RuntimeError("implement other type here")
 
         n_classes = np.amax(y[0]) + 1
 
@@ -68,7 +69,7 @@ class PAX:
             DA = [] # line 11 # TODO initialize properly
             GA = [] # line 11 # TODO initialize properly
             HA = [] # line 11 # TODO initialize properly
-            for i in range(amount_participants):
+            for i in range(amount_participants): # multithread?
                 Pi:PAXParticipant = P[i]
                 Pi.recieve_model(A.getmodel())
                 Pi.predict()
@@ -87,6 +88,9 @@ class PAX:
 
     def predict(self, X:np.ndarray):
         return self.A.predict(X)
+
+    def predict_proba(self, X:np.ndarray):
+        return self.A.predict_proba(X)
 
 class PAXAggregator:
 
@@ -160,8 +164,8 @@ class PAXAggregator:
 
         probas = np.average(probas, axis=2)
         return probas
-        
-    
+
+
     def predict(self, X):
         probas = self.predict_proba(X)
 
@@ -243,7 +247,7 @@ class PAXParticipant:
         pass
 
     def compute_histogram(self, number_of_bins:int, sketchtype:Sketch_type = Sketch_type.DDSKETCH) -> None: # TODO use self.X and self.e to construct local historgram on features. store it in self.DXpi
-        
+
         match sketchtype:
             case Sketch_type.DDSKETCH:
                 print("creating histogram for party {} 📊".format(self.idk))
@@ -283,7 +287,7 @@ class PAXParticipant:
                         if b == 0:
                             interp_values[i, feature_i] = (self.splits[feature_i][0] + self.splits[feature_i][1])/2
                         else:
-                            interp_values[:, feature_i] = [(self.splits[feature_i][i-1] + self.splits[feature_i][i])/2 for i in bin_indices ]
+                            interp_values[i, feature_i] = (self.splits[feature_i][b-1] + self.splits[feature_i][b])/2 # TODO Double double check this method
                 except ValueError: # all bins are the same, so just take the first one for all
                     interp_values[:, feature_i] = [self.splits[feature_i][0] for x in self.X[:, feature_i] ]
             self.DXpi = interp_values

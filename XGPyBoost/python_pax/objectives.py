@@ -1,6 +1,7 @@
 import numpy as np
-
-def softprob(y_true, y_pred):
+ # TODO also use the weights!
+def softprob(y_true, y_pred, case_weight=None):
+    if case_weight is None: case_weight = np.ones(y_true.shape)
     grad = np.zeros((y_pred.shape[0], y_pred.shape[1]), dtype=float) # for multi-class
     hess = np.zeros((y_pred.shape[0], y_pred.shape[1]), dtype=float) # for multi-class
     for rowid in range(y_pred.shape[0]):

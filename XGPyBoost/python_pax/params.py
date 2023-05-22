@@ -15,4 +15,4 @@ class Params:
     objective:object = softprob
     n_bins:int = 255
     n_participants:int = 5
-    
+    num_class:int = 100

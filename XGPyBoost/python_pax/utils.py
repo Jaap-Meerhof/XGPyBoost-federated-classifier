@@ -1,7 +1,8 @@
 from customddsketch import DDSketch
 import numpy as np
 from tqdm import tqdm
-
+import pickle
+import os
 
 def find_splits(X, EA:float, N_BINS:int):
     """create splits using DDSketch. also adds the minimun and maximum value as a split
@@ -45,3 +46,14 @@ def data_to_histo(X):
         # plt.show()
         splits.append(bin_edges)
     return splits
+
+def saveVar(var:any, name:str): # .kl
+    name = name +"pkl"
+    with open(name, 'wb') as file:
+        pickle.dump(var)
+
+def getVar(name:str):
+    name = name + ".kl"
+    if os.path.exists(name):
+        with open(name, 'rb') as file:
+            splits = pickle.load(file)
