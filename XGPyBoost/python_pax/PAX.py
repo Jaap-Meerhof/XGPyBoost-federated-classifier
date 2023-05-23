@@ -11,11 +11,8 @@ from histograms import histogram
 import time
 from enum import Enum
 import utils
-class Sketch_type(Enum):
 
-    NORMAL = 0
-
-    DDSKETCH = 1
+from sketchtype import Sketch_type
 
 class PAX:
     def __init__(self, params:Params) -> None:
@@ -32,7 +29,7 @@ class PAX:
             T (int): Maximum Number of Training Rounds
             l (callable): Model Loss Function
         """
-        if splits is not None:
+        if splits is None:
             if self.params.sketch_type is Sketch_type.DDSKETCH:
                 splits = utils.find_splits(X, self.params.eA, self.params.n_bins)
             elif self.params.sketch_type is Sketch_type.NORMAL:

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from objectives import softprob
-from PAX import Sketch_type
+from sketchtype import Sketch_type
 @dataclass
 class Params:
     #__slots__ = ['n_trees', 'max_depth', 'eta', 'lam', 'alpha', 'gamma', 'min_child_weight', 'max_delta_step', 'eA', 'objective', 'n_bins', 'n_participants', 'sketch_type']

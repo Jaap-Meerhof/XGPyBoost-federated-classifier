@@ -1,4 +1,4 @@
-from PAX import *
+from PAX import PAX
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from objectives import softprob
@@ -10,11 +10,15 @@ import pandas as pd
 from sklearn import datasets
 import matplotlib.pyplot as plt
 from xgboost import XGBClassifier
+from params import Params
+from XGPyBoostClass import XGPyBoostClass
 
 from keras.datasets import cifar10
 import utils
 import pickle
 import os
+
+import numpy as np 
 
 import cProfile # DEBUG
 import time  # DEBUG
@@ -39,7 +43,7 @@ def main():
     # test_airline()
     # test_iris()
     test_purchase_100()
-    test_make_classification()
+    # test_make_classification()
 
 def test_MNIST():
     print("testing MNIST")
@@ -54,7 +58,7 @@ def test_MNIST():
 
 def run_both(X_train, X_test, y_train, y_test, params:Params):
     print("> running normal xgboost first....")
-    model = XGBClassifier(max_depth=params.max_depth, tree_method='exact', objective="multi:softmax",
+    model = XGBClassifier(max_depth=params.max_depth, tree_method='approx', objective="multi:softmax",
                            learning_rate=params.eta, n_estimators=params.n_trees, gamma=params.gamma, reg_alpha=params.alpha, reg_lambda=params.lam)
     model.fit(X_train, y_train)
     y_pred=model.predict(X_test)
@@ -168,7 +172,7 @@ def test_airline():
 def test_purchase_100():
     pass
     MAX_DEPTH = 12
-    N_TREES = 300
+    N_TREES = 100
     ETA = 0.1
     GAMMA = 0.3 #std=0.3
     MIN_CHILD_WEIGHT = 1 # std=1
@@ -178,7 +182,7 @@ def test_purchase_100():
 
     N_BINS = 400
     EA = 1/N_BINS
-    data = np.load('/home/jaap/Documents/tmp/purchase-100/purchase100.npz')
+    data = np.load('/home/hacker/Documents/datasets/purchase100_2.npz')
     features = data['features']
     labels = data['labels']
     X_train, X_test, y_train, y_test = train_test_split(features,labels, test_size=0.30)
