@@ -32,12 +32,10 @@ class PAX:
             T (int): Maximum Number of Training Rounds
             l (callable): Model Loss Function
         """
-        # splits:list[list[float]] = None
-        # type:Sketch_type = Sketch_type(Sketch_type.DDSKETCH)
-        if splits is None:
-            if type is Sketch_type.DDSKETCH:
+        if splits is not None:
+            if self.params.sketch_type is Sketch_type.DDSKETCH:
                 splits = utils.find_splits(X, self.params.eA, self.params.n_bins)
-            elif type is Sketch_type.NORMAL:
+            elif self.params.sketch_type is Sketch_type.NORMAL:
                 splits = utils.data_to_histo(X)
             else:
                 raise RuntimeError("implement other type here")

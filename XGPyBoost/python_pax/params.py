@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from objectives import softprob
+from PAX import Sketch_type
 @dataclass
 class Params:
-    #__slots__ = ['n_trees', 'max_depth', 'eta', 'lam', 'alpha', 'gamma', 'min_child_weight', 'max_delta_step', 'eA', 'objective', 'n_bins', 'n_participants']
+    #__slots__ = ['n_trees', 'max_depth', 'eta', 'lam', 'alpha', 'gamma', 'min_child_weight', 'max_delta_step', 'eA', 'objective', 'n_bins', 'n_participants', 'sketch_type']
     n_trees: int
     max_depth: int = 6
     eta: float = 0.3
@@ -16,3 +17,5 @@ class Params:
     n_bins:int = 255
     n_participants:int = 5
     num_class:int = 100
+    sketch_type:Sketch_type = Sketch_type.NORMAL
+    
