@@ -42,7 +42,7 @@ def main():
     # shadow_model = MLPClassifier(hidden_layer_sizes=(16,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=1000)
     shadow_model = xgb.XGBClassifier(tree_method="exact", objective='multi:softmax', num_class=N_CLASSES, max_depth=6, n_estimators=10, learning_rate=0.3)
     # shadow_model = DecisionTreeClassifier(max_depth=6,max_leaf_nodes=100)
-    target_model = PAX(Params(n_trees=10, sketch_type=Sketch_type.NORMAL)).fit(X, y)
+    target_model = PAX(Params(n_trees=10, sketch_type=Sketch_tmam   ype.NORMAL)).fit(X, y)
 
     attack_model = MLPClassifier(hidden_layer_sizes=(10,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=2000)
     n_classes = N_CLASSES
