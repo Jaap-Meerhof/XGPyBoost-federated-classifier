@@ -39,10 +39,10 @@ params = Params(n_trees=N_TREES, max_depth=MAX_DEPTH, eta=ETA, lam=REG_LAMBDA,
                 alpha=REG_ALPHA, gamma=GAMMA, min_child_weight=MIN_CHILD_WEIGHT, max_delta_step=0, objective=softprob )
 def main():
     # test_cifar10()
-    # test_MNIST()
+    test_MNIST()
     # test_airline()
     # test_iris()
-    test_purchase_100()
+    # test_purchase_100()
     # test_make_classification()
 
 def test_MNIST():

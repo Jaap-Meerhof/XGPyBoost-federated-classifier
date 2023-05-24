@@ -32,7 +32,7 @@ class PAX:
         if splits is None:
             if self.params.sketch_type is Sketch_type.DDSKETCH:
                 splits = utils.find_splits(X, self.params.eA, self.params.n_bins)
-            elif self.params.sketch_type is Sketch_type.NORMAL:
+            elif self.params.sketch_type is Sketch_type.NORMAL: # TODO merge X
                 splits = utils.data_to_histo(X)
             else:
                 raise RuntimeError("implement other type here")

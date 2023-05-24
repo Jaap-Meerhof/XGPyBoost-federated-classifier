@@ -5,6 +5,7 @@ from sklearn.neural_network import MLPClassifier
 import pickle
 import xgboost as xgb
 from sklearn.tree import DecisionTreeClassifier
+from sklearn import datasets
 
 import sys
 import os
@@ -13,20 +14,30 @@ from params import Params
 import utils
 from PAX import PAX
 from PAX import Sketch_type
-N_CLASSES = 5
-XSIZE = 40_000
-SPLIT = 20_00
+N_CLASSES = 9
+XSIZE = 1797
+SPLIT = XSIZE//2
 N_TREES = 10
 
-TARGET_MODEL_NAME = "target_model500_10trees.pkl"
+TARGET_MODEL_NAME = "target_modelMNIST_1.pkl"
 def main():
-    pass
-    X, y = make_classification(n_samples=int(80_000) , n_features=20, n_informative=4, n_redundant=0, n_classes=N_CLASSES, random_state=500)
+    print('test')
+    digits = datasets.load_digits()
+    X = digits.images
+    X = X.reshape(1797, 8*8) # flatten
+
+    y = digits.target
+
+    # X, y = make_classification(n_samples=int(10_000) , n_features=20, n_informative=4, n_redundant=0, n_classes=N_CLASSES, random_state=50)
 
     shadow_fake = (X[:SPLIT, :], y[:SPLIT])
     X, y = X[SPLIT:, :], y[SPLIT:]
     splits = utils.data_to_histo(X)
     N_PARTICIPANTS = 5
+
+    shadow_model = xgb.XGBClassifier(tree_method="exact", objective='multi:softmax', num_class=10, max_depth=6, n_estimators=1, learning_rate=0.3)
+    shadow_model.fit(X,y)
+
     X = np.array(np.array_split(X, N_PARTICIPANTS))
     y = np.array(np.array_split(y, N_PARTICIPANTS))
     target_model = None
@@ -40,9 +51,11 @@ def main():
         pickle.dump(target_model, open( TARGET_MODEL_NAME, "wb"))
 
     # shadow_model = MLPClassifier(hidden_layer_sizes=(16,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=1000)
+    xgb.config_context(verbosity=3)
+
     shadow_model = xgb.XGBClassifier(tree_method="exact", objective='multi:softmax', num_class=N_CLASSES, max_depth=6, n_estimators=10, learning_rate=0.3)
+    shadow_model.fit(X,y)
     # shadow_model = DecisionTreeClassifier(max_depth=6,max_leaf_nodes=100)
-    target_model = PAX(Params(n_trees=10, sketch_type=Sketch_type.NORMAL)).fit(X, y)
 
     attack_model = MLPClassifier(hidden_layer_sizes=(10,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=2000)
     n_classes = N_CLASSES

@@ -32,8 +32,8 @@ def find_splits(X, EA:float, N_BINS:int):
 def data_to_histo(X):
     splits: list[list[float]] = []
     for feature in range(X.shape[1]):
-        range_min = np.min(X)
-        range_max = np.max(X)
+        range_min = np.min(X[:, feature])
+        range_max = np.max(X[:, feature])
         num_bins = 255
         bin_edges = np.linspace(range_min, range_max, num=num_bins-1)
         bin_indices = np.digitize(X[:, feature], bin_edges) -1
