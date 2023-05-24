@@ -2,3 +2,6 @@ __pycache__/
 .DS_Store
 *.jl
 .target*
+error.txt
+output.txt
+.gitignore
