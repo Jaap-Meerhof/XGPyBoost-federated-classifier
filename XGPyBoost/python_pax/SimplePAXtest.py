@@ -172,7 +172,7 @@ def test_airline():
 def test_purchase_100():
     pass
     MAX_DEPTH = 12
-    N_TREES = 100
+    N_TREES = 200
     ETA = 0.1
     GAMMA = 0.3 #std=0.3
     MIN_CHILD_WEIGHT = 1 # std=1
@@ -182,7 +182,10 @@ def test_purchase_100():
 
     N_BINS = 400
     EA = 1/N_BINS
-    data = np.load('/home/hacker/Documents/datasets/purchase100_2.npz')
+    # data = np.load('/home/hacker/Documents/datasets/purchase100_2.npz')
+    print("> getting purchase100 dataset... ")
+    data = np.load('/data/BioGrid/meerhofj/purchase100_2.npz')
+    print("> got dataset!")
     features = data['features']
     labels = data['labels']
     X_train, X_test, y_train, y_test = train_test_split(features,labels, test_size=0.30)
