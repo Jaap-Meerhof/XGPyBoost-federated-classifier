@@ -23,31 +23,38 @@ def membership_inference_attack(shadow_fake, target_model:PAX, shadow_model, att
     print("> shadow accuracy: %.2f" % (accuracy_score(test_fake[1], y_pred)))
 
     pass # TODO step C, train attack model on outputs of shadow_model and target_model on shadow_fake
-    x = []
-    y = []
-    for i in range(len(other_fake[0]) + len(shadow_fake[0][:,0])):
-        rand = random.choice(range(2)) # random value between 1 and 0
-        if rand == 0:
-            x.append(other_fake[0][rand,:])
-            np.delete(other_fake[0], rand)
-            y.append(0)
-        else:
-            x.append(shadow_fake[0][rand,:])
-            np.delete(shadow_fake[0], rand)
-            y.append(1)
-    attack_x = np.zeros((len(x), n_classes))
+
+    y0 = np.zeros(len(other_fake[0]))
+    y1 = np.ones(len(shadow_fake[0]))
+
+    x0 = other_fake[0]
+    x1 = shadow_fake[0]
+    x = np.concatenate((x0,x1), axis=0)
+    y = np.concatenate((y0,y1), axis=0)
+    indices = np.random.permutation(x.shape[0])
+    x = x[indices]
+    y = y[indices]
+
 
     attack_x_0 = shadow_model.predict_proba(np.array(x, dtype=float))
-    attack_x_1 = target_model.predict_proba(np.array(x))
-    tmp = np.max(attack_x_0, axis=1)
-    attack_x = np.column_stack((attack_x_0, attack_x_1))
-    attack_model.fit(attack_x,y)
+    # attack_x_1 = target_model.predict_proba(np.array(x))
+    tmp = np.max(attack_x_0, axis=1).reshape(-1, 1)
+    # attack_x = np.column_stack((attack_x_0, attack_x_1))
+    attack_model.fit(tmp,y)
 
     pass # TODO step D, check accuracy x when feeding it with real and fake data!
-    test_x = np.vstack((test_fake[0], X[0]))
-    predicted = np.column_stack((shadow_model.predict_proba(test_x), target_model.predict_proba(test_x)))
+    # test_x = np.vstack((test_fake[0], X[0]))
+    test_x = np.vstack((X, test_fake[0]))
+    y = np.hstack( (np.ones(X.shape[0]), np.zeros(test_fake[0].shape[0])) )
+    # predicted = np.column_stack((shadow_model.predict_proba(test_x), target_model.predict_proba(test_x)))
+    predicted = np.max(target_model.predict_proba(test_x), axis=1).reshape(-1,1)
     # predicted = target_model.predict_proba(test_x)
-    y = np.hstack((np.zeros(test_fake[0].shape[0]), np.ones(X[0].shape[0]) ))
+    # y = np.hstack((np.zeros(test_fake[0].shape[0]), np.ones(X[0].shape[0]) ))
     y_pred = attack_model.predict(predicted)
     print("> Attack accuracy: %.2f" % (accuracy_score(y, y_pred)))
     print("> Attack precision: %.2f" % (precision_score(y, y_pred)))
+
+    y_pred = [ 1 if maxv > 0.8 else 0 for maxv in predicted ]
+    print("> Attack accuracy: %.2f" % (accuracy_score(y, y_pred)))
+    print("> Attack precision: %.2f" % (precision_score(y, y_pred)))
+    pass

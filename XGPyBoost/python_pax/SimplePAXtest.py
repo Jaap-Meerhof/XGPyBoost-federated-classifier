@@ -18,7 +18,7 @@ import utils
 import pickle
 import os
 
-import numpy as np 
+import numpy as np
 
 import cProfile # DEBUG
 import time  # DEBUG
@@ -39,10 +39,10 @@ params = Params(n_trees=N_TREES, max_depth=MAX_DEPTH, eta=ETA, lam=REG_LAMBDA,
                 alpha=REG_ALPHA, gamma=GAMMA, min_child_weight=MIN_CHILD_WEIGHT, max_delta_step=0, objective=softprob )
 def main():
     # test_cifar10()
-    test_MNIST()
+    # test_MNIST()
     # test_airline()
     # test_iris()
-    # test_purchase_100()
+    test_purchase_100()
     # test_make_classification()
 
 def test_MNIST():
@@ -183,8 +183,10 @@ def test_purchase_100():
     N_BINS = 400
     EA = 1/N_BINS
     # data = np.load('/home/hacker/Documents/datasets/purchase100_2.npz')
+    data = np.load('/home/jaap/Documents/tmp/purchase-100/purchase100.npz')
+
     print("> getting purchase100 dataset... ")
-    data = np.load('/data/BioGrid/meerhofj/purchase100_2.npz')
+    # data = np.load('/data/BioGrid/meerhofj/purchase100_2.npz')
     print("> got dataset!")
     features = data['features']
     labels = data['labels']
