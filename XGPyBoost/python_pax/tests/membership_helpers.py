@@ -19,6 +19,8 @@ def membership_inference_attack(shadow_fake, target_model:PAX, shadow_model, att
     shadow_fake = (shadow_fake[0][2*split:, :], shadow_fake[1][2*split:]) # splits the datset
 
     shadow_model.fit(shadow_fake[0], shadow_fake[1])
+    y_pred = shadow_model.predict(test_fake[0])
+    print("> shadow accuracy: %.2f" % (accuracy_score(test_fake[1], y_pred)))
 
     pass # TODO step C, train attack model on outputs of shadow_model and target_model on shadow_fake
     x = []
@@ -37,13 +39,14 @@ def membership_inference_attack(shadow_fake, target_model:PAX, shadow_model, att
 
     attack_x_0 = shadow_model.predict_proba(np.array(x, dtype=float))
     attack_x_1 = target_model.predict_proba(np.array(x))
-    attack_x = np.hstack((attack_x_0, attack_x_1))
+    tmp = np.max(attack_x_0, axis=1)
+    attack_x = np.column_stack((attack_x_0, attack_x_1))
     attack_model.fit(attack_x,y)
 
     pass # TODO step D, check accuracy x when feeding it with real and fake data!
     test_x = np.vstack((test_fake[0], X[0]))
-    predicted = np.hstack((shadow_model.predict_proba(test_x), target_model.predict_proba(test_x)))
-
+    predicted = np.column_stack((shadow_model.predict_proba(test_x), target_model.predict_proba(test_x)))
+    # predicted = target_model.predict_proba(test_x)
     y = np.hstack((np.zeros(test_fake[0].shape[0]), np.ones(X[0].shape[0]) ))
     y_pred = attack_model.predict(predicted)
     print("> Attack accuracy: %.2f" % (accuracy_score(y, y_pred)))
