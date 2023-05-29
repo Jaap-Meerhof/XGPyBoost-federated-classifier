@@ -15,7 +15,7 @@ class Params:
     eA:float = 0.1
     objective:object = softprob
     n_bins:int = 255
-    n_participants:int = 5
-    num_class:int = 100
+    n_participants:int = 5 # DEL?
+    num_class:int = 100 # DEL?
     sketch_type:Sketch_type = Sketch_type.NORMAL
-    
+

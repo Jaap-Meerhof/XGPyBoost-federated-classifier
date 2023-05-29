@@ -1,7 +1,7 @@
 __pycache__/
 .DS_Store
 *.jl
-.target*
+target*.pkl
 error.txt
 output.txt
 .gitignore

@@ -23,14 +23,14 @@ import numpy as np
 import cProfile # DEBUG
 import time  # DEBUG
 
-MAX_DEPTH = 6
-N_TREES = 20
+MAX_DEPTH = 25
+N_TREES = 5
 ETA = 1
-GAMMA = 0.3 #std=0.3
-MIN_CHILD_WEIGHT = 1 # std=1
+GAMMA = 0.2 #std=0.3
+MIN_CHILD_WEIGHT = 0.1 # std=1
 REG_ALPHA=0 #std =0
-REG_LAMBDA=1
-N_PARTICIPANTS = 1
+REG_LAMBDA=0.5
+N_PARTICIPANTS = 3
 
 N_BINS = 400
 EA = 1/N_BINS
@@ -39,10 +39,10 @@ params = Params(n_trees=N_TREES, max_depth=MAX_DEPTH, eta=ETA, lam=REG_LAMBDA,
                 alpha=REG_ALPHA, gamma=GAMMA, min_child_weight=MIN_CHILD_WEIGHT, max_delta_step=0, objective=softprob )
 def main():
     # test_cifar10()
-    # test_MNIST()
+    test_MNIST()
     # test_airline()
     # test_iris()
-    test_purchase_100()
+    # test_purchase_100()
     # test_make_classification()
 
 def test_MNIST():
@@ -61,22 +61,28 @@ def run_both(X_train, X_test, y_train, y_test, params:Params):
     model = XGBClassifier(max_depth=params.max_depth, tree_method='approx', objective="multi:softmax",
                            learning_rate=params.eta, n_estimators=params.n_trees, gamma=params.gamma, reg_alpha=params.alpha, reg_lambda=params.lam)
     model.fit(X_train, y_train)
-    y_pred=model.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    print("> Accuracy normal XGBoost: %.2f" % (accuracy))
+
+    accuracy_test = accuracy_score(y_test, model.predict(X_test))
+    print("> Accuracy normal XGBoost: %.2f" % (accuracy_test))
+
+    accuracy_train = accuracy_score(y_train, model.predict(X_train))
+    print(f"> Degree of overfitting the larger the more overfitting: {accuracy_train - accuracy_test}")
 
 
     # splits:list[list[float]] = utils.find_splits(X_train, EA, N_BINS=N_BINS)
     splits:list[list[float]] = utils.data_to_histo(X_train)
 
-    X_train = np.array_split(X_train, N_PARTICIPANTS)
-    y_train = np.array_split(y_train, N_PARTICIPANTS)
+    X_train_split = np.array_split(X_train, N_PARTICIPANTS)
+    y_train_split = np.array_split(y_train, N_PARTICIPANTS)
     print("> running federated XGBoost...")
     pax = PAX(params)
-    pax.fit(X_train, y_train, splits)
+    pax.fit(X_train_split, y_train_split, splits)
 
-    preds_X = pax.predict(X_test)
-    print("> Accuracy federated XGBoost: %.2f" % (accuracy_score(y_test, preds_X)))
+    accuracy_test = accuracy_score(y_test, pax.predict(X_test))
+    print("> Accuracy PAX: %.2f" % (accuracy_test))
+
+    accuracy_train = accuracy_score(y_train, pax.predict(X_train))
+    print(f"> Degree of overfitting the larger the more overfitting: {accuracy_train - accuracy_test}")
 
 def test_iris():
     iris = datasets.load_iris()

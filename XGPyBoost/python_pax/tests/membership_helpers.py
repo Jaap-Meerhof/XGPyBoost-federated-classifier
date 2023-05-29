@@ -8,6 +8,12 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import PAX
 
+def plot_histo(X):
+    import matplotlib.pyplot as plt
+    plt.hist(X[0], color='lightgreen', ec='black', bins=15)
+    plt.show()
+    pass
+
 def membership_inference_attack(shadow_fake, target_model:PAX, shadow_model, attack_model, X, n_classes):
     # will do step B, C, and D from my paper
 
@@ -39,6 +45,7 @@ def membership_inference_attack(shadow_fake, target_model:PAX, shadow_model, att
     attack_x_0 = shadow_model.predict_proba(np.array(x, dtype=float))
     # attack_x_1 = target_model.predict_proba(np.array(x))
     tmp = np.max(attack_x_0, axis=1).reshape(-1, 1)
+    # tmp = attack_x_0
     # attack_x = np.column_stack((attack_x_0, attack_x_1))
     attack_model.fit(tmp,y)
 
@@ -54,7 +61,8 @@ def membership_inference_attack(shadow_fake, target_model:PAX, shadow_model, att
     print("> Attack accuracy: %.2f" % (accuracy_score(y, y_pred)))
     print("> Attack precision: %.2f" % (precision_score(y, y_pred)))
 
-    y_pred = [ 1 if maxv > 0.8 else 0 for maxv in predicted ]
+    y_pred = [ 1 if maxv > 0.9 else 0 for maxv in predicted ]
     print("> Attack accuracy: %.2f" % (accuracy_score(y, y_pred)))
     print("> Attack precision: %.2f" % (precision_score(y, y_pred)))
     pass
+
