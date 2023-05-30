@@ -14,17 +14,20 @@ import utils
 from PAX import PAX
 from PAX import Sketch_type
 
-N_CLASSES = 5
+N_CLASSES = 10
 XSIZE = 40_000
 SPLIT = 30_000 # XSIZE//2
-N_TREES = 200
 
 TARGET_MODEL_NAME = "target_modelPURCHASE_2class_5n_200t_12d_400b.pkl"
+TARGET_MODEL_NAME = "target_modelDebug.pkl"
+
 SAVE = True
-purchase100 = np.load('/home/jaap/Documents/tmp/purchase-100/purchase100.npz')
 DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
+DATA_PATH = "/home/hacker/cloud_jaap_meerhof/SchoolCloud/Master Thesis/Database/acquire-valued-shoppers-challenge/"
+purchase100 = np.load(DATA_PATH + '../purchase100_2.npz')
+
 MAX_DEPTH = 12
-N_TREES = 200
+N_TREES = 100
 ETA = 0.1
 GAMMA = 0.3 #std=0.3
 MIN_CHILD_WEIGHT = 1 # std=1
@@ -40,7 +43,7 @@ def main():
     random.seed(1)
     random_indices = random.sample(range(purchase100['features'].shape[0]), XSIZE)
     X = pickle.load(open(DATA_PATH+"purchase_100_features.p", "rb"))[random_indices]
-    y = pickle.load(open(DATA_PATH+"purchase_100_2_labels.p", "rb"))[random_indices]
+    y = pickle.load(open(DATA_PATH+"purchase_100_10_labels.p", "rb"))[random_indices]
     plot_histo(X)
     # X = purchase100['features'][random_indices]
     # y = purchase100['labels'][random_indices]
@@ -53,25 +56,31 @@ def main():
 
     # target_model = MLPClassifier(hidden_layer_sizes=(20,10), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=2000)
     # target_model.fit(X,y)
+    target_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="multi:softmax",
+                           learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA)
+    # target_model = MLPClassifier(hidden_layer_sizes=(16,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=2000)
+
+    target_model.fit(X,y)
 
 
-    X_PAX = np.array(np.array_split(X, N_PARTICIPANTS))
-    y_PAX = np.array(np.array_split(y, N_PARTICIPANTS))
+    # X_PAX = np.array(np.array_split(X, N_PARTICIPANTS))
+    # y_PAX = np.array(np.array_split(y, N_PARTICIPANTS))
 
-    target_model = None
-    if SAVE and os.path.exists(TARGET_MODEL_NAME):
-        print("> getting target model from pickle jar")
-        target_model = pickle.load(open(TARGET_MODEL_NAME, "rb"))
-    else:
-        print("> creating target model as no pickle jar exists")
-        target_model = PAX(Params(n_trees=N_TREES, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT, lam=REG_LAMBDA, alpha=REG_ALPHA, eta=ETA, gamma=GAMMA))
-        target_model.fit(X_PAX, y_PAX, splits)
-        pickle.dump(target_model, open( TARGET_MODEL_NAME, "wb"))
+    # target_model = None
+    # if SAVE and os.path.exists(TARGET_MODEL_NAME):
+    #     print("> getting target model from pickle jar")
+    #     target_model = pickle.load(open(TARGET_MODEL_NAME, "rb"))
+    # else:
+    #     print("> creating target model as no pickle jar exists")
+    #     target_model = PAX(Params(n_trees=N_TREES, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT, lam=REG_LAMBDA, alpha=REG_ALPHA, eta=ETA, gamma=GAMMA))
+    #     target_model.fit(X_PAX, y_PAX, splits)
+    #     pickle.dump(target_model, open( TARGET_MODEL_NAME, "wb"))
 
     # shadow_model = MLPClassifier(hidden_layer_sizes=(16,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=1000)
     # xgb.config_context(verbosity=3)
 
     shadow_model = xgb.XGBClassifier(tree_method="exact", objective='multi:softmax', num_class=N_CLASSES, max_depth=6, n_estimators=10, learning_rate=0.1)
+    # shadow_model = xgb.XGBClassifier(tree_method="exact", objective='binary:logistic', num_class=N_CLASSES, max_depth=MAX_DEPTH, n_estimators=N_TREES, learning_rate=0.1)
 
     # shadow_model = DecisionTreeClassifier(max_depth=6,max_leaf_nodes=100)
     # attack_model = xgb.XGBClassifier(tree_method="exact", objective='binary:logistic', max_depth=6, n_estimators=10, learning_rate=0.3)
@@ -81,7 +90,7 @@ def main():
     y_pred = target_model.predict(X)
     tmp = target_model.predict_proba(X)
     print("> approx base accuracy: %.2f" % (accuracy_score(y, y_pred)))
-    membership_inference_attack(shadow_fake=shadow_fake, target_model=target_model, shadow_model=shadow_model, attack_model=attack_model, X=X, n_classes=N_CLASSES)
+    membership_inference_attack(shadow_fake=shadow_fake, target_model=target_model, shadow_model=shadow_model, attack_model=attack_model, X=X)
 
 
 if __name__ == "__main__":
