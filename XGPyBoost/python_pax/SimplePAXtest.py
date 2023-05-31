@@ -191,8 +191,8 @@ def test_purchase_100():
     # data = np.load('/home/hacker/Documents/datasets/purchase100_2.npz')
     data = np.load('/home/jaap/Documents/tmp/purchase-100/purchase100.npz')
 
+    data = np.load('/data/BioGrid/meerhofj/purchase100_2.npz')
     print("> getting purchase100 dataset... ")
-    # data = np.load('/data/BioGrid/meerhofj/purchase100_2.npz')
     print("> got dataset!")
     features = data['features']
     labels = data['labels']

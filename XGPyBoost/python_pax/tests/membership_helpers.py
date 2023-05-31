@@ -10,21 +10,23 @@ import PAX
 
 def plot_histo(X):
     import matplotlib.pyplot as plt
-    plt.hist(X[0], color='lightgreen', ec='black', bins=15)
+    plt.hist(X[:, 0], color='lightgreen', ec='black', bins=15)
     plt.show()
     pass
+
+def split_shadowfake(shadow_fake):
+    split = len(shadow_fake[0][:,0])//3 # 
+    other_fake  = (shadow_fake[0][:split, :], shadow_fake[1][:split]) # splits the dataset
+    test_fake   = (shadow_fake[0][split:2*split, :], shadow_fake[1][split:2*split])
+    shadow_fake = (shadow_fake[0][2*split:, :], shadow_fake[1][2*split:]) # splits the datset
+    return other_fake, test_fake, shadow_fake
 
 def membership_inference_attack(shadow_fake, target_model:object, shadow_model, attack_model, X):
     # will do step B, C, and D from my paper
 
     pass # TODO step B, train shadow model on shadow_fake
-    # TODO split up shadow_fake into shadow_fake and other_fake!
-    split = len(shadow_fake[0][:,0])//3 # 
-    other_fake  = (shadow_fake[0][:split, :], shadow_fake[1][:split]) # splits the dataset
-    test_fake   = (shadow_fake[0][split:2*split, :], shadow_fake[1][split:2*split])
-    shadow_fake = (shadow_fake[0][2*split:, :], shadow_fake[1][2*split:]) # splits the datset
-    print(shadow_fake[1].shape)
-    print(shadow_fake[0].shape)
+    other_fake, test_fake, shadow_fake = split_shadowfake(shadow_fake)
+    
     shadow_model.fit(shadow_fake[0], shadow_fake[1])
     y_pred = shadow_model.predict(test_fake[0])
     print("> shadow accuracy: %.2f" % (accuracy_score(test_fake[1], y_pred)))
@@ -64,8 +66,8 @@ def membership_inference_attack(shadow_fake, target_model:object, shadow_model, 
     print("> Attack accuracy: %.2f" % (accuracy_score(y, y_pred)))
     print("> Attack precision: %.2f" % (precision_score(y, y_pred)))
 
-    y_pred = [ 1 if maxv > 0.9 else 0 for maxv in predicted ]
-    print("> Attack accuracy: %.2f" % (accuracy_score(y, y_pred)))
-    print("> Attack precision: %.2f" % (precision_score(y, y_pred)))
-    pass
+    # y_pred = [ 1 if maxv > 0.9 else 0 for maxv in predicted ]
+    # print("> Attack accuracy: %.2f" % (accuracy_score(y, y_pred)))
+    # print("> Attack precision: %.2f" % (precision_score(y, y_pred)))
+    return shadow_model, attack_model
 
