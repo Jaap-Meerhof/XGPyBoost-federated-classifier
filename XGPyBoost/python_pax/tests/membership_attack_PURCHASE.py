@@ -118,6 +118,7 @@ def main():
     #   * precision of attack on both 50/50
     precision_X_attack = precision_score(np.ones((X.shape[0],)), attack_model.predict(X) )
     #   * accuracy both 50/50
+    
     # csv or json or plk pickle!
 
 
