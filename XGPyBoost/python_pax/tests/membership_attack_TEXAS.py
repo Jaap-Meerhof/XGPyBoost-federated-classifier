@@ -22,9 +22,10 @@ TARGET_MODEL_NAME = "target_modelPURCHASE_2class_5n_200t_12d_400b.pkl"
 TARGET_MODEL_NAME = "target_modelDebugtexas.pkl"
 
 SAVE = True
-DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
-DATA_PATH = "/home/hacker/cloud_jaap_meerhof/SchoolCloud/Master Thesis/Database/acquire-valued-shoppers-challenge/"
-DATA_PATH = '/data/BioGrid/meerhofj/texas/'
+# DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
+DATA_PATH = "/home/jaap/Documents/JaapCloud/SchoolCloud/Master Thesis/Database/texas/"
+# DATA_PATH = "/home/hacker/cloud_jaap_meerhof/SchoolCloud/Master Thesis/Database/acquire-valued-shoppers-challenge/"
+# DATA_PATH = '/data/BioGrid/meerhofj/texas/'
 
 MAX_DEPTH = 12
 N_TREES = 200

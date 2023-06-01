@@ -109,7 +109,7 @@ class TreeNode:
         #     return best_gain_feature, threshold_feature
 
         # num_cores = multiprocessing.cpu_count()
-        # with concurrent.futures.ThreadPoolExecutor(max_workers=num_cores+12) as executor:
+        # with concurrent.futures.ThreadPoolExecutor(max_workers=num_cores) as executor:
 
         #     futures = [executor.submit(find_highest_gain, feature) for feature in range(X.shape[1])]
 

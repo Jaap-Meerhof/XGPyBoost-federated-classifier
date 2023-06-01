@@ -2,7 +2,8 @@ import random
 import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
-
+from membershipresults import MembershipResults
+import csv
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -10,9 +11,48 @@ import PAX
 
 def plot_histo(X):
     import matplotlib.pyplot as plt
-    plt.hist(X[:, 0], color='lightgreen', ec='black', bins=15)
+    plt.hist(X, color='lightgreen', ec='black', bins=15)
     plt.show()
     pass
+
+def plot_data(data: np.array, labels, destination= 'plot.png', name='Sample Text'):
+    """will plot the different variables against the first column of data (the value tested against)
+
+    Args:
+        data (_type_): twodimentional array of variables
+        labels (_type_): corresponding labels
+    """
+    import matplotlib.pyplot as plt
+    import matplotlib.axis as Axis
+    amount_of_plots = len(data[0]) -1
+    nrows = 3
+    ncols = (amount_of_plots//3)+1
+    fig, axs = plt.subplots(nrows, ncols)
+    x = data[:, 0]
+    y = data[:, 1:]
+    y_all = [list(tmp) for tmp in zip(*y)]
+
+    for i, y in enumerate(y_all):
+        ax= axs[i//ncols, i%ncols]
+        ax.plot(x, y)
+        ax.set_xlabel(labels[0])
+        ax.set_ylabel(labels[i+1])
+        ax.set_title(labels[i+1])
+
+    if nrows*ncols > amount_of_plots:
+        for i in range(amount_of_plots, nrows, ncols):
+            fig.delaxes[i//ncols, i%ncols]
+    plt.tight_layout()
+    fig.suptitle(name)
+    # fig.text(ncols, nrows, 'testtesttest')
+    plt.savefig(destination)
+    # plt.title("test2")
+    # plt.show()
+    pass
+
+data = np.array([[-1,1,2,3,4,5], [-2, 2,3,4,5,6]])
+labels = ["N", "param1", "param2", "param3", "param4", "param5"]
+plot_data(data, labels)
 
 def split_shadowfake(shadow_fake):
     split = len(shadow_fake[0][:,0])//3 # 
@@ -21,7 +61,7 @@ def split_shadowfake(shadow_fake):
     shadow_fake = (shadow_fake[0][2*split:, :], shadow_fake[1][2*split:]) # splits the datset
     return other_fake, test_fake, shadow_fake
 
-def membership_inference_attack(shadow_fake, target_model:object, shadow_model, attack_model, X):
+def membership_inference_attack(shadow_fake, target_model:object, shadow_model, attack_model, X, orininal_y):
     # will do step B, C, and D from my paper
 
     pass # TODO step B, train shadow model on shadow_fake
@@ -69,5 +109,47 @@ def membership_inference_attack(shadow_fake, target_model:object, shadow_model, 
     # y_pred = [ 1 if maxv > 0.9 else 0 for maxv in predicted ]
     # print("> Attack accuracy: %.2f" % (accuracy_score(y, y_pred)))
     # print("> Attack precision: %.2f" % (precision_score(y, y_pred)))
-    return shadow_model, attack_model
 
+
+    # things to collect: 
+    #   * accuracy target_model on training data
+
+    data = []
+    acc_training_target = accuracy_score(orininal_y, target_model.predict(X))
+    data.append(acc_training_target)
+    #   * accuracy target_model on test data
+    acc_test_target = accuracy_score(shadow_fake[1], target_model.predict(shadow_fake[0])) # shadow_fake used for testing
+    data.append(acc_test_target)
+    #   * degree of overfitting
+    overfit_target = acc_training_target - acc_test_target
+    data.append(overfit_target)
+    #   * accuracy shadow_model on training data
+    other_fake, test_fake, shadow_fake = split_shadowfake(shadow_fake)
+    acc_training_shadow = accuracy_score(shadow_fake[1], shadow_model.predict(shadow_fake[0]))
+    data.append(acc_training_shadow)
+    #   * accuracy shadow_model on test data
+    acc_test_shadow = accuracy_score(test_fake[1], shadow_model.predict(test_fake[0]))
+    data.append(acc_test_shadow)
+    #   * degree of overfitting
+    overfit_shadow = acc_training_shadow - acc_test_shadow
+    data.append(overfit_shadow)
+    #   * attack accuracy on X 
+
+    acc_X_attack = accuracy_score(np.ones((X.shape[0],)), attack_model.predict(target_model.predict_proba(X)))
+    data.append(acc_X_attack)
+    #   * attack accuracy on other shadow
+    acc_other_attack = accuracy_score(np.zeros((other_fake[1].shape[0],)), attack_model.predict(target_model.predict_proba(other_fake[0])))
+    data.append(acc_other_attack)
+
+    #   * precision of attack on both 50/50
+    min = np.min((X.shape[0], other_fake[0].shape[0])) # takes the length of the shortest one
+    fiftyfiftx = np.vstack((X[:min, :], other_fake[0][:min, :])) # TODO aggregate X and other_fake 50/50
+    fiftyfifty = np.hstack((np.ones(min), np.zeros(min)))
+
+    precision_50_attack = precision_score(fiftyfifty, attack_model.predict(target_model.predict_proba(fiftyfiftx)) )
+    data.append(precision_50_attack)
+    #   * accuracy both 50/50
+    acc_50_attack = accuracy_score(fiftyfifty, attack_model.predict(target_model.predict_proba(fiftyfiftx)))
+    data.append(acc_50_attack)
+    # csv or json or plk pickle!
+    return data

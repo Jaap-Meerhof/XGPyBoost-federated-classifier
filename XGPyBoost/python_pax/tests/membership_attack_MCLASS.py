@@ -20,7 +20,7 @@ SPLIT = 7_500 # XSIZE//2
 N_TREES = 100
 
 TARGET_MODEL_NAME = "target_modelMCLASS_500_100trees_eta1.pkl"
-SAVE = True
+SAVE = False
 def main():
 
     X, y = make_classification(n_samples=int(XSIZE) , n_features=20, n_informative=10, n_redundant=0, n_classes=N_CLASSES, random_state=50)
@@ -50,7 +50,7 @@ def main():
     # xgb.config_context(verbosity=3)
 
 
-    # shadow_model = DecisionTreeClassifier(max_depth=6,max_leaf_nodes=100)
+    shadow_model = DecisionTreeClassifier(max_depth=6,max_leaf_nodes=100)
     # attack_model = xgb.XGBClassifier(tree_method="exact", objective='binary:logistic', max_depth=6, n_estimators=10, learning_rate=0.3)
     attack_model = DecisionTreeClassifier(max_depth=6,max_leaf_nodes=10)
 
