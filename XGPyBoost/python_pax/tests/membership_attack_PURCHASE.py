@@ -114,11 +114,12 @@ def main():
     #   * attack accuracy on other shadow
     acc_other_attack = accuracy_score(np.zeros((other_fake.shape[0],)), attack_model.predict(other_fake[0]))
 
-    fiftyfifty = 1 # TODO aggregate X and other_fake 50/50
+    min = np.min(X.shape[0], other_fake[0].shape[0])
+    fiftyfifty = np.vstack(X[:min, :], other_fake[0][:min, :]) # TODO aggregate X and other_fake 50/50
     #   * precision of attack on both 50/50
     precision_X_attack = precision_score(np.ones((X.shape[0],)), attack_model.predict(X) )
     #   * accuracy both 50/50
-    
+
     # csv or json or plk pickle!
 
 

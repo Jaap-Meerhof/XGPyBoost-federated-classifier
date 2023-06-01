@@ -58,7 +58,7 @@ def test_MNIST():
 
 def run_both(X_train, X_test, y_train, y_test, params:Params):
     print("> running normal xgboost first....")
-    model = XGBClassifier(max_depth=params.max_depth, tree_method='approx', objective="multi:softmax",
+    model = XGBClassifier(max_depth=params.max_depth, tree_method='exact', objective="multi:softmax",
                            learning_rate=params.eta, n_estimators=params.n_trees, gamma=params.gamma, reg_alpha=params.alpha, reg_lambda=params.lam)
     model.fit(X_train, y_train)
 
@@ -68,6 +68,7 @@ def run_both(X_train, X_test, y_train, y_test, params:Params):
     accuracy_train = accuracy_score(y_train, model.predict(X_train))
     print(f"> Degree of overfitting the larger the more overfitting: {accuracy_train - accuracy_test}")
 
+    tmp = model.predict_proba(X_test)
 
     # splits:list[list[float]] = utils.find_splits(X_train, EA, N_BINS=N_BINS)
     splits:list[list[float]] = utils.data_to_histo(X_train)
@@ -83,6 +84,8 @@ def run_both(X_train, X_test, y_train, y_test, params:Params):
 
     accuracy_train = accuracy_score(y_train, pax.predict(X_train))
     print(f"> Degree of overfitting the larger the more overfitting: {accuracy_train - accuracy_test}")
+    tmp2 = pax.predict_proba(X_test)
+    pass
 
 def test_iris():
     iris = datasets.load_iris()
