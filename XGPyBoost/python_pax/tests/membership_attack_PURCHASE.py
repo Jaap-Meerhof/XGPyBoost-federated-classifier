@@ -22,8 +22,8 @@ TARGET_MODEL_NAME = "target_modelPURCHASE_2class_5n_200t_12d_400b.pkl"
 TARGET_MODEL_NAME = "target_modelDebug.pkl"
 
 SAVE = False
-DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
-# DATA_PATH = "/home/hacker/cloud_jaap_meerhof/SchoolCloud/Master Thesis/Database/acquire-valued-shoppers-challenge/"
+# DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
+DATA_PATH = "/home/hacker/cloud_jaap_meerhof/SchoolCloud/Master Thesis/Database/acquire-valued-shoppers-challenge/"
 # DATA_PATH = '/data/BioGrid/meerhofj/acquire-valued-shoppers-challenge/'
 
 MAX_DEPTH = 12
@@ -40,7 +40,7 @@ EA = 1/N_BINS
 
 def main():
     full_data = []
-    for N_TREES in [3,5]: # [5, 10, 20, 30, 40, 50, 100]:
+    for N_TREES in [5, 10, 20, 30, 40, 50, 100]:
         random.seed(1)
         X = pickle.load(open(DATA_PATH+"purchase_100_features.p", "rb"))
         y = pickle.load(open(DATA_PATH+"purchase_100_10_labels.p", "rb"))
@@ -110,7 +110,9 @@ def main():
         params.prettyprint()
     print(labels)
     print(full_data)
-    plot_data(np.array(full_data), labels, "purchase100.png", params.prettytext())
+    pickle.dump(full_data, open( "fulldata.pkl", "wb"))
+
+    plot_data(np.array(full_data), labels, "purchase100"+ str(labels[0]) + ".png", params.prettytext())
     # data = [param] + data
     
 
