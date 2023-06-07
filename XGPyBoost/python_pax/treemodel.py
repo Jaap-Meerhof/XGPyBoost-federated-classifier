@@ -22,7 +22,7 @@ class TreeNode:
         return np.sign(w)*reg_s
 
     def calc_weight(self, G, H, params):
-        w = -self.threshold_l1(G, params.alpha) / (H + params.lam)
+        w = -self.threshold_l1(G, params.alpha) / (H + params.lam) # square root of l1?
 
         if params.max_delta_step != 0:
             w = np.clip(w, -params.max_delta_step, params.max_delta_step)

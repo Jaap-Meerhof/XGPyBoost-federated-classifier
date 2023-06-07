@@ -15,47 +15,53 @@ from PAX import PAX
 from PAX import Sketch_type
 
 N_CLASSES = 10
-XSIZE = 40_000
-SPLIT = 30_000 # XSIZE//2
+XSIZE = 3_186
+SPLIT = XSIZE-(XSIZE//3) # XSIZE//2
 
 TARGET_MODEL_NAME = "target_modelPURCHASE_2class_5n_200t_12d_400b.pkl"
-TARGET_MODEL_NAME = "target_modelDebug.pkl"
+TARGET_MODEL_NAME = "target_modelDebugtexas.pkl"
 
 SAVE = False
-DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
+# DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
+DATA_PATH = "/home/jaap/Documents/JaapCloud/SchoolCloud/Master Thesis/Database/texas/"
 # DATA_PATH = "/home/hacker/cloud_jaap_meerhof/SchoolCloud/Master Thesis/Database/acquire-valued-shoppers-challenge/"
-# DATA_PATH = '/data/BioGrid/meerhofj/acquire-valued-shoppers-challenge/'
+# DATA_PATH = '/data/BioGrid/meerhofj/texas/'
 
-MAX_DEPTH = 12
-N_TREES = 50
+MAX_DEPTH = 6
+N_TREES = 1
 ETA = 0.3
 GAMMA = 0.3 #std=0.3
 MIN_CHILD_WEIGHT = 1 # std=1
 REG_ALPHA=0 #std =0
 REG_LAMBDA= 1 #std =1
 N_PARTICIPANTS = 5
-N_BINS = 3
-EA = 1/N_BINS
 
+N_BINS = 400
+EA = 1/N_BINS
 
 def main():
     full_data = []
+
     for N_TREES in [5, 10, 20, 30, 40, 50, 100]:
         random.seed(1)
-        X = pickle.load(open(DATA_PATH+"purchase_100_features.p", "rb"))
-        y = pickle.load(open(DATA_PATH+"purchase_100_10_labels.p", "rb"))
-        random_indices = random.sample(range(X.shape[0]), XSIZE)
-        X = X[random_indices]
-        y = y[random_indices]
-        # plot_histo(X[:, 0])
-        # plot_histo(X[:, 1])
+        X, y = getDNA()
 
+        random_indices = random.sample(range(X.shape[0]), XSIZE)
+        X, y= X[random_indices], y[random_indices]
+
+        X = np.array(X)
+        y = np.array(y) -1
         params = Params(N_TREES, MAX_DEPTH, ETA, REG_LAMBDA, REG_ALPHA, GAMMA, MIN_CHILD_WEIGHT, eA = EA, n_bins=N_BINS, n_participants=N_PARTICIPANTS, num_class=N_CLASSES)
+
         
-        
+        # plot_histo(X)
+        # X = purchase100['features'][random_indices]
+        # y = purchase100['labels'][random_indices]
+        # X, y = make_classification(n_samples=int(XSIZE) , n_features=20, n_informative=10, n_redundant=0, n_classes=N_CLASSES, random_state=50)
+
         shadow_fake = (X[:SPLIT, :], y[:SPLIT])
         X, y = X[SPLIT:, :], y[SPLIT:]
-        splits = utils.data_to_histo(X, num_bins=N_BINS)
+        splits = utils.data_to_histo(X)
 
         # target_model = MLPClassifier(hidden_layer_sizes=(20,10), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=2000)
         # target_model.fit(X,y)
@@ -65,8 +71,8 @@ def main():
         # target_model.fit(X,y)
 
 
-        X_PAX = np.array(np.array_split(X, N_PARTICIPANTS))
-        y_PAX = np.array(np.array_split(y, N_PARTICIPANTS))
+        # X_PAX = np.array(np.array_split(X, N_PARTICIPANTS))
+        # y_PAX = np.array(np.array_split(y, N_PARTICIPANTS))
 
         target_model = None
         if SAVE and os.path.exists(TARGET_MODEL_NAME):
@@ -95,32 +101,29 @@ def main():
         # attack_model = MLPClassifier(hidden_layer_sizes=(10,10), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=2000)
         y_pred = target_model.predict(X)
         tmp = target_model.predict_proba(X)
-        print("> base accuracy: %.2f" % (accuracy_score(y, y_pred)))
+        print("> approx base accuracy: %.2f" % (accuracy_score(y, y_pred)))
         data = membership_inference_attack(shadow_fake=shadow_fake, target_model=target_model, shadow_model=shadow_model, attack_model=attack_model, X=X, orininal_y=y)
         data = [N_TREES] + data
-        labels = ["acc_training_target", "acc_test_target", "overfit_target", 
+
+        
+        full_data.append(data)
+
+        # for i in range(len(labels)):
+        #     print(labels[i] + " = " + str(data[i]))
+        params.prettyprint()
+    labels = ["acc_training_target", "acc_test_target", "overfit_target", 
                 "acc_training_shadow", "acc_test_shadow", "overfit_shadow", 
                 "acc_X_attack", "acc_other_attack", 
                 "precision_50_attack", "acc_50_attack"]
-        labels = ["N_TREES"] + labels
-        full_data.append(data)
-
-        for i in range(len(labels)):
-            print(labels[i] + " = " + str(data[i]))
-        params.prettyprint()
+    labels = ["N_TREES"] + labels
     print(labels)
     print(full_data)
-    pickle.dump(full_data, open( "fulldata_PURCHASE.pkl", "wb"))
-
-    plot_data(np.array(full_data), labels, "purchase100"+ str(labels[0]) + ".png", params.prettytext())
-    # data = [param] + data
+    pickle.dump(full_data, open( "fulldata_DNA_n_trees.pkl", "wb"))
+    params = Params(N_TREES, MAX_DEPTH, ETA, REG_LAMBDA, REG_ALPHA, GAMMA, MIN_CHILD_WEIGHT, eA = EA, n_bins=N_BINS, n_participants=N_PARTICIPANTS, num_class=10)
     
-
-
-
-
+    plot_data(np.array(full_data), labels, "DNA_"+ str(labels[0]) + ".png", params.prettytext())
 
 
 if __name__ == "__main__":
     main()
-    # cProfile.run('main()', sort='cumtime')
+    # cProfile.run('main()', sort='cumtime')main

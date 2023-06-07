@@ -68,3 +68,4 @@ def plot_accuracies(X_train, X_test, y_train, y_test, params, plot_x):
     plt.legend(loc="upper left")
     plt.show()
     return accuracies_xgb, accuracies_pax
+

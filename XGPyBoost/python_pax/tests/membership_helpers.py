@@ -62,28 +62,28 @@ def plot_data(data: np.array, labels, destination= 'plot.png', name='Sample Text
     # plt.title("test2")
     # plt.show()
     pass
-data = pickle.load(open("fulldata.pkl", "rb"))
-# data = np.array([[-1,1,2,3,4,5], [-2, 2,3,4,5,6]])
-# labels = ["N", "param1", "param2", "param3", "param4", "param5"]
-labels = ["acc_training_target", "acc_test_target", "overfit_target", 
-                "acc_training_shadow", "acc_test_shadow", "overfit_shadow", 
-                "acc_X_attack", "acc_other_attack", 
-                "precision_50_attack", "acc_50_attack"]
-labels = ["N_TREES"] + labels
-# params = Params(10, 10, 0.1, 1, 1, 1, 1, eA = 0.2, n_bins=10, n_participants=7, num_class=5)
-MAX_DEPTH = 12
-N_TREES = 50
-ETA = 0.3
-GAMMA = 0.3 #std=0.3
-MIN_CHILD_WEIGHT = 1 # std=1
-REG_ALPHA=0 #std =0
-REG_LAMBDA= 1 #std =1
-N_PARTICIPANTS = 5
-N_BINS = 3
-EA = 1/N_BINS
-params = Params(N_TREES, MAX_DEPTH, ETA, REG_LAMBDA, REG_ALPHA, GAMMA, MIN_CHILD_WEIGHT, eA = EA, n_bins=N_BINS, n_participants=N_PARTICIPANTS, num_class=10)
+# data = pickle.load(open("fulldata.pkl", "rb"))
+# # data = np.array([[-1,1,2,3,4,5], [-2, 2,3,4,5,6]])
+# # labels = ["N", "param1", "param2", "param3", "param4", "param5"]
+# labels = ["acc_training_target", "acc_test_target", "overfit_target", 
+#                 "acc_training_shadow", "acc_test_shadow", "overfit_shadow", 
+#                 "acc_X_attack", "acc_other_attack", 
+#                 "precision_50_attack", "acc_50_attack"]
+# labels = ["N_TREES"] + labels
+# # params = Params(10, 10, 0.1, 1, 1, 1, 1, eA = 0.2, n_bins=10, n_participants=7, num_class=5)
+# MAX_DEPTH = 12
+# N_TREES = 50
+# ETA = 0.3
+# GAMMA = 0.3 #std=0.3
+# MIN_CHILD_WEIGHT = 1 # std=1
+# REG_ALPHA=0 #std =0
+# REG_LAMBDA= 1 #std =1
+# N_PARTICIPANTS = 5
+# N_BINS = 3
+# EA = 1/N_BINS
+# params = Params(N_TREES, MAX_DEPTH, ETA, REG_LAMBDA, REG_ALPHA, GAMMA, MIN_CHILD_WEIGHT, eA = EA, n_bins=N_BINS, n_participants=N_PARTICIPANTS, num_class=10)
 
-plot_data(np.array(data), labels, name=params.prettytext())
+# plot_data(np.array(data), labels, name=params.prettytext())
 
 def split_shadowfake(shadow_fake):
     split = len(shadow_fake[0][:,0])//3 # 
@@ -155,7 +155,6 @@ def membership_inference_attack(shadow_fake, target_model:object, shadow_model, 
     overfit_target = acc_training_target - acc_test_target
     data.append(overfit_target)
     #   * accuracy shadow_model on training data
-    other_fake, test_fake, shadow_fake = split_shadowfake(shadow_fake)
     acc_training_shadow = accuracy_score(shadow_fake[1], shadow_model.predict(shadow_fake[0]))
     data.append(acc_training_shadow)
     #   * accuracy shadow_model on test data
@@ -184,3 +183,15 @@ def membership_inference_attack(shadow_fake, target_model:object, shadow_model, 
     data.append(acc_50_attack)
     # csv or json or plk pickle!
     return data
+
+def getDNA():
+    import pandas as pd
+    df=pd.read_csv("/home/jaap/Documents/JaapCloud/SchoolCloud/Master Thesis/Database/dna.csv")
+    labels = df.columns
+    shape = df.shape
+    y = df["class"]
+    X = df.drop(['class'], axis=1)
+
+    X = np.array(X)
+    y = np.array(y)
+    return X, y
