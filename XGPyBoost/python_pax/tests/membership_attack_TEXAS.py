@@ -25,7 +25,7 @@ SAVE = True
 # DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
 DATA_PATH = "/home/jaap/Documents/JaapCloud/SchoolCloud/Master Thesis/Database/texas/"
 # DATA_PATH = "/home/hacker/cloud_jaap_meerhof/SchoolCloud/Master Thesis/Database/acquire-valued-shoppers-challenge/"
-DATA_PATH = '/data/BioGrid/meerhofj/texas/'
+# DATA_PATH = '/data/BioGrid/meerhofj/texas/'
 
 MAX_DEPTH = 12
 N_TREES = 30
@@ -108,8 +108,7 @@ def main():
         tmp = target_model.predict_proba(X)
         print("> approx base accuracy: %.2f" % (accuracy_score(y, y_pred)))
         data = membership_inference_attack(shadow_fake=shadow_fake, target_model=target_model, shadow_model=shadow_model, attack_model=attack_model, X=X, orininal_y=y)
-        data = [N_TREES] + data
-
+        data = [N_BINS] + data
         
         full_data.append(data)
 
@@ -119,7 +118,7 @@ def main():
                 "acc_training_shadow", "acc_test_shadow", "overfit_shadow", 
                 "acc_X_attack", "acc_other_attack", 
                 "precision_50_attack", "acc_50_attack"]
-    labels = [TESTEDNAME] + labels
+    labels = [N_BINS] + labels
     print(labels)
     print(full_data)
     pickle.dump(full_data, open( "fulldata10k_texas_N_BINS" + TESTEDNAME + ".pkl", "wb"))

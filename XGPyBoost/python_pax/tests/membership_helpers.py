@@ -195,3 +195,29 @@ def getDNA():
     X = np.array(X)
     y = np.array(y)
     return X, y
+
+def getCensus(DATASETLOCATION):
+    labels = pickle.load(open(DATASETLOCATION + "/census/census_feature_desc.p", "rb"))
+    X = pickle.load(open("/home/jaap/Documents/JaapCloud/SchoolCloud/Master Thesis/Database/census/census_features.p", "rb"))
+    y = pickle.load(open("/home/jaap/Documents/JaapCloud/SchoolCloud/Master Thesis/Database/census/census_labels.p", "rb"))
+    return X, y, labels
+
+def getCensusCloud():
+    """downloads the Census dataset, this is a binary problem :(
+
+    Returns:
+        _type_: _description_
+    """
+    import urllib.request
+    print("> downloading from JaapCloud1.0...")
+
+    datalabel = urllib.request.urlopen("https://jaapmeerhof.nl/index.php/s/iNJPFMs34S99r3W/download").read() # label
+    labels = pickle.loads(datalabel)
+
+    dataX = urllib.request.urlopen("https://jaapmeerhof.nl/index.php/s/TrE8dBCcTs8dJWN/download").read() # X
+    X = pickle.loads(dataX)
+
+    datay = urllib.request.urlopen("https://jaapmeerhof.nl/index.php/s/Zpj4moWNy5tk7B5/download").read() # y
+    y = pickle.loads(datay)
+    print("> done downloading from JaapCloud1.0!")
+    return X, y, labels

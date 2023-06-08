@@ -15,11 +15,12 @@ from PAX import PAX
 from PAX import Sketch_type
 
 N_CLASSES = 10
-XSIZE = 3_186
+XSIZE = 40_000  # 3_186
 SPLIT = XSIZE-(XSIZE//3) # XSIZE//2
 
 TARGET_MODEL_NAME = "target_modelPURCHASE_2class_5n_200t_12d_400b.pkl"
 TARGET_MODEL_NAME = "target_modelDebugtexas.pkl"
+TARGET_MODEL_NAME = "target_model_census.pkl"
 
 SAVE = False
 # DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
@@ -43,14 +44,17 @@ def main():
     full_data = []
 
     for N_TREES in [5, 10, 20, 30, 40, 50, 100]:
+        param = N_TREES
+        paramstr = "N_TREES" + str(param)
+        paramname = "N_TREES"
         random.seed(1)
-        X, y = getDNA()
-
+        # X, y = getDNA()
+        X, y, _ = getCensusCloud()
         random_indices = random.sample(range(X.shape[0]), XSIZE)
         X, y= X[random_indices], y[random_indices]
 
         X = np.array(X)
-        y = np.array(y) -1
+        y = np.array(y)
         params = Params(N_TREES, MAX_DEPTH, ETA, REG_LAMBDA, REG_ALPHA, GAMMA, MIN_CHILD_WEIGHT, eA = EA, n_bins=N_BINS, n_participants=N_PARTICIPANTS, num_class=N_CLASSES)
 
         
@@ -73,24 +77,26 @@ def main():
 
         # X_PAX = np.array(np.array_split(X, N_PARTICIPANTS))
         # y_PAX = np.array(np.array_split(y, N_PARTICIPANTS))
-
+        def insert_paramname():
+            return TARGET_MODEL_NAME[:-4] + "_" + paramstr + TARGET_MODEL_NAME[-4:]
+        
         target_model = None
-        if SAVE and os.path.exists(TARGET_MODEL_NAME):
+        if SAVE and os.path.exists(insert_paramname()):
             print("> getting target model from pickle jar")
-            target_model = pickle.load(open(TARGET_MODEL_NAME, "rb"))
+            target_model = pickle.load(open(insert_paramname(), "rb"))
         else:
             print("> creating target model as no pickle jar exists")
             # target_model = PAX(Params(n_trees=N_TREES, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT, lam=REG_LAMBDA, alpha=REG_ALPHA, eta=ETA, gamma=GAMMA))
-            target_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="multi:softmax",
+            target_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="binary:logistic",
                             learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA)
             target_model.fit(X,y)
             # target_model.fit(X_PAX, y_PAX, splits)
-            pickle.dump(target_model, open( TARGET_MODEL_NAME, "wb"))
+            pickle.dump(target_model, open( insert_paramname(), "wb"))
 
         # shadow_model = MLPClassifier(hidden_layer_sizes=(16,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=1000)
         # xgb.config_context(verbosity=3)
 
-        shadow_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="multi:softmax",
+        shadow_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="binary:logistic", # "multi:softmax"
                             learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA)
         # shadow_model = xgb.XGBClassifier(tree_method="exact", objective='binary:logistic', num_class=N_CLASSES, max_depth=MAX_DEPTH, n_estimators=N_TREES, learning_rate=0.1)
 
@@ -103,7 +109,7 @@ def main():
         tmp = target_model.predict_proba(X)
         print("> approx base accuracy: %.2f" % (accuracy_score(y, y_pred)))
         data = membership_inference_attack(shadow_fake=shadow_fake, target_model=target_model, shadow_model=shadow_model, attack_model=attack_model, X=X, orininal_y=y)
-        data = [N_TREES] + data
+        data = [param] + data
 
         
         full_data.append(data)
@@ -115,13 +121,13 @@ def main():
                 "acc_training_shadow", "acc_test_shadow", "overfit_shadow", 
                 "acc_X_attack", "acc_other_attack", 
                 "precision_50_attack", "acc_50_attack"]
-    labels = ["N_TREES"] + labels
+    labels = [paramname] + labels
     print(labels)
     print(full_data)
-    pickle.dump(full_data, open( "fulldata_DNA_n_trees.pkl", "wb"))
+    pickle.dump(full_data, open( "fulldata_Census_n_trees.pkl", "wb"))
     params = Params(N_TREES, MAX_DEPTH, ETA, REG_LAMBDA, REG_ALPHA, GAMMA, MIN_CHILD_WEIGHT, eA = EA, n_bins=N_BINS, n_participants=N_PARTICIPANTS, num_class=10)
     
-    plot_data(np.array(full_data), labels, "DNA_"+ str(labels[0]) + ".png", params.prettytext())
+    plot_data(np.array(full_data), labels, "Census_"+ paramname + ".png", params.prettytext())
 
 
 if __name__ == "__main__":
