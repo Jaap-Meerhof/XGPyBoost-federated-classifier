@@ -36,8 +36,8 @@ def data_to_histo(X, num_bins=255):
         range_max = np.max(X[:, feature])
         
         bin_edges = np.linspace(range_min, range_max, num=num_bins-1)
-        bin_indices = np.digitize(X[:, feature], bin_edges) -1
-        bin_counts = np.bincount(bin_indices, minlength=num_bins)
+        # bin_indices = np.digitize(X[:, feature], bin_edges) -1
+        # bin_counts = np.bincount(bin_indices, minlength=num_bins)
         # plt.bar(range(num_bins), bin_counts, align='center')
         # plt.xticks(range(num_bins))
         # plt.xlabel('Bins')

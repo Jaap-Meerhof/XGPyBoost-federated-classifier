@@ -21,11 +21,11 @@ SPLIT = 30_000 # XSIZE//2
 TARGET_MODEL_NAME = "target_modelPURCHASE_2class_5n_200t_12d_400b.pkl"
 TARGET_MODEL_NAME = "target_modelDebugtexas.pkl"
 
-SAVE = False
+SAVE = True
 # DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
 DATA_PATH = "/home/jaap/Documents/JaapCloud/SchoolCloud/Master Thesis/Database/texas/"
 # DATA_PATH = "/home/hacker/cloud_jaap_meerhof/SchoolCloud/Master Thesis/Database/acquire-valued-shoppers-challenge/"
-# DATA_PATH = '/data/BioGrid/meerhofj/texas/'
+DATA_PATH = '/data/BioGrid/meerhofj/texas/'
 
 MAX_DEPTH = 12
 N_TREES = 30
@@ -44,14 +44,14 @@ def main():
     full_data = []
 
     # for N_TREES in [5, 10, 20, 30, 40, 50, 100]:
-    for N_BINS in [400, 300, 200, 100, 50, 30, 20, 10, 5, 3, 2]:
+    for N_BINS in [400, 300, 200, 100, 50, 30, 20, 10, 5, 3]:
         TESTEDNAME = str(N_BINS)
         TARGET_MODEL_NAME = "target_modelDebugtexasNBIN" + TESTEDNAME + ".pkl"
 
         random.seed(1)
         X = pickle.load(open(DATA_PATH+"texas_100_v2_features.p", "rb"))
         y = pickle.load(open(DATA_PATH+"texas_100_v2_labels.p", "rb"))
-        featurelabels = pickle.load(open(DATA_PATH+"texas_100_v2_feature_desc.p", "rb"))
+        # featurelabels = pickle.load(open(DATA_PATH+"texas_100_v2_feature_desc.p", "rb"))
         random_indices = random.sample(range(X.shape[0]), XSIZE)
         X, y= X[random_indices], y[random_indices]
 
@@ -67,7 +67,7 @@ def main():
 
         shadow_fake = (X[:SPLIT, :], y[:SPLIT])
         X, y = X[SPLIT:, :], y[SPLIT:]
-        splits = utils.data_to_histo(X)
+        splits = utils.data_to_histo(X, N_BINS)
 
         # target_model = MLPClassifier(hidden_layer_sizes=(20,10), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=2000)
         # target_model.fit(X,y)
@@ -113,9 +113,8 @@ def main():
         
         full_data.append(data)
 
-        for i in range(len(labels)):
-            print(labels[i] + " = " + str(data[i]))
         params.prettyprint()
+
     labels = ["acc_training_target", "acc_test_target", "overfit_target", 
                 "acc_training_shadow", "acc_test_shadow", "overfit_shadow", 
                 "acc_X_attack", "acc_other_attack", 
