@@ -35,7 +35,7 @@ class TreeNode:
         w = self.calc_weight(G, H, params)
 
         # this is 2* the terms from equation 7 to avoid the slower 1/2 division (copying from c++ source)
-        gain = -(2*G*w + (H+params.lam)*(w**2))
+        gain = -(2*G*w + (H+params.lam)*(w**2)) # hmm maybe
         return gain - 2*params.alpha * abs(w)
 
     def calc_split_gain(self, G, H, G_l, G_r, H_l, H_r, params):

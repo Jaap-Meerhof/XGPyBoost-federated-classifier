@@ -39,10 +39,10 @@ params = Params(n_trees=N_TREES, max_depth=MAX_DEPTH, eta=ETA, lam=REG_LAMBDA,
                 alpha=REG_ALPHA, gamma=GAMMA, min_child_weight=MIN_CHILD_WEIGHT, max_delta_step=0, objective=softprob )
 def main():
     # test_cifar10()
-    test_MNIST()
+    # test_MNIST()
     # test_airline()
     # test_iris()
-    # test_purchase_100()
+    test_purchase_100()
     # test_make_classification()
 
 def test_MNIST():
@@ -180,8 +180,8 @@ def test_airline():
 
 def test_purchase_100():
     pass
-    MAX_DEPTH = 12
-    N_TREES = 200
+    MAX_DEPTH = 8
+    N_TREES = 30
     ETA = 0.1
     GAMMA = 0.3 #std=0.3
     MIN_CHILD_WEIGHT = 1 # std=1
@@ -194,12 +194,12 @@ def test_purchase_100():
     # data = np.load('/home/hacker/Documents/datasets/purchase100_2.npz')
     data = np.load('/home/jaap/Documents/tmp/purchase-100/purchase100.npz')
 
-    data = np.load('/data/BioGrid/meerhofj/purchase100_2.npz')
+    # data = np.load('/data/BioGrid/meerhofj/purchase100_2.npz')
     print("> getting purchase100 dataset... ")
     print("> got dataset!")
-    features = data['features']
-    labels = data['labels']
-    X_train, X_test, y_train, y_test = train_test_split(features,labels, test_size=0.30)
+    features = data['features'][:20_000]
+    labels = data['labels'][:20_000]
+    X_train, X_test, y_train, y_test = train_test_split(features,labels, test_size=0.20)
     myparams = Params(n_trees=N_TREES, max_depth=MAX_DEPTH, eta=ETA, lam=REG_LAMBDA,
                 alpha=REG_ALPHA, gamma=GAMMA, min_child_weight=MIN_CHILD_WEIGHT, max_delta_step=0, objective=softprob )
     run_both(X_train, X_test, y_train, y_test, myparams)

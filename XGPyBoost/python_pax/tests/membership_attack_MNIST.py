@@ -6,6 +6,7 @@ import pickle
 import xgboost as xgb
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import datasets
+from keras.datasets import mnist
 
 import sys
 import os
@@ -40,14 +41,18 @@ def main():
     for N_TREES in [5, 10, 20, 30, 40, 50, 100]:
         params = Params(N_TREES, MAX_DEPTH, ETA, REG_LAMBDA, REG_ALPHA, GAMMA, MIN_CHILD_WEIGHT, eA = EA, n_bins=N_BINS, n_participants=N_PARTICIPANTS, num_class=10)
 
+        (train_X, train_y), (test_X, test_y) = mnist.load_data()
         digits = datasets.load_digits()
-        X = digits.images
-        X = X.reshape(1797, 8*8) # flatten
+        # X = digits.images
+        # X = X.reshape(1797, 8*8) # flatten
+        # y = digits.target
 
-        y = digits.target
+        X = np.array(train_X).reshape(train_X.shape[0], 28*28)
+        y = np.array(train_y)
+        shadow_fake = (np.array(test_X).reshape(test_X.shape[0], 28*28), np.array(test_y))
 
-        shadow_fake = (X[:SPLIT, :], y[:SPLIT])
-        X, y = X[SPLIT:, :], y[SPLIT:]
+        # shadow_fake = (X[:SPLIT, :], y[:SPLIT])
+        # X, y = X[SPLIT:, :], y[SPLIT:]
         splits = utils.data_to_histo(X)
         
         # target_model = MLPClassifier(hidden_layer_sizes=(20,10), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=2000)
@@ -62,8 +67,12 @@ def main():
             target_model = pickle.load(open(TARGET_MODEL_NAME, "rb"))
         else:
             print("> creating target model as no pickle jar exists")
-            target_model = PAX(params)
-            target_model.fit(X_PAX, y_PAX, splits)
+            # target_model = PAX(params)
+            # target_model.fit(X_PAX, y_PAX, splits)
+            target_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="multi:softmax",
+                            learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA)
+            target_model.fit(X,y)
+            # target_model.fit(X_PAX, y_PAX, splits)
             pickle.dump(target_model, open( TARGET_MODEL_NAME, "wb"))
 
         # shadow_model = MLPClassifier(hidden_layer_sizes=(16,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=1000)
