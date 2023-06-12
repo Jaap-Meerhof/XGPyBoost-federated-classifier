@@ -25,6 +25,7 @@ SAVE = False
 DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
 # DATA_PATH = "/home/hacker/cloud_jaap_meerhof/SchoolCloud/Master Thesis/Database/acquire-valued-shoppers-challenge/"
 # DATA_PATH = '/data/BioGrid/meerhofj/acquire-valued-shoppers-challenge/'
+DATA_PATH = '/data/BioGrid/meerhofj/acquire-valued-shoppers-challenge/'
 
 MAX_DEPTH = 12
 N_TREES = 50
@@ -74,11 +75,11 @@ def main():
             target_model = pickle.load(open(TARGET_MODEL_NAME, "rb"))
         else:
             print("> creating target model as no pickle jar exists")
-            # target_model = PAX(Params(n_trees=N_TREES, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT, lam=REG_LAMBDA, alpha=REG_ALPHA, eta=ETA, gamma=GAMMA))
-            target_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="multi:softmax",
-                            learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA)
-            target_model.fit(X,y)
-            # target_model.fit(X_PAX, y_PAX, splits)
+            target_model = PAX(Params(n_trees=N_TREES, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT, lam=REG_LAMBDA, alpha=REG_ALPHA, eta=ETA, gamma=GAMMA))
+            # target_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="multi:softmax",
+            #                 learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA)
+            # target_model.fit(X,y)
+            target_model.fit(X_PAX, y_PAX, splits)
             pickle.dump(target_model, open( TARGET_MODEL_NAME, "wb"))
 
         # shadow_model = MLPClassifier(hidden_layer_sizes=(16,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=1000)
@@ -110,7 +111,7 @@ def main():
         params.prettyprint()
     print(labels)
     print(full_data)
-    pickle.dump(full_data, open( "fulldata_PURCHASE.pkl", "wb"))
+    pickle.dump(full_data, open( "fulldata_PURCHASE_N_BINS.pkl", "wb"))
 
     plot_data(np.array(full_data), labels, "purchase100"+ str(labels[0]) + ".png", params.prettytext())
     # data = [param] + data
