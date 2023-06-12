@@ -109,6 +109,7 @@ def main():
         print("> approx base accuracy: %.2f" % (accuracy_score(y, y_pred)))
         data = membership_inference_attack(shadow_fake=shadow_fake, target_model=target_model, shadow_model=shadow_model, attack_model=attack_model, X=X, orininal_y=y)
         data = [N_BINS] + data
+
         
         full_data.append(data)
 
