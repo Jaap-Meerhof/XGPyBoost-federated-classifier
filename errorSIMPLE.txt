@@ -1,0 +1,3 @@
+2023-06-13 17:06:13.983645: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: SSE4.1 SSE4.2 AVX FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+> building trees:   0%|          | 0/29 [00:00<?, ?it/s]> building trees:   3%|▎         | 1/29 [15:46<7:21:46, 946.67s/it]> building trees:   7%|▋         | 2/29 [31:17<7:01:43, 937.15s/it]> building trees:  10%|█         | 3/29 [47:04<6:48:11, 941.97s/it]User defined signal 2

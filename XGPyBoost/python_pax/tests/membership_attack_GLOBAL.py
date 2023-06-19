@@ -14,22 +14,36 @@ import utils
 from PAX import PAX
 from PAX import Sketch_type
 
-N_CLASSES = 10
-XSIZE = 40_000  # 3_186
-SPLIT = XSIZE-(XSIZE//3) # XSIZE//2
+# TO EDIT WITH TESTS
+N_CLASSES = 100
+XSIZE = 80_000  # 3_186
+SPLIT = XSIZE-(XSIZE//4) # XSIZE//2
 
-TARGET_MODEL_NAME = "target_modelPURCHASE_2class_5n_200t_12d_400b.pkl"
-TARGET_MODEL_NAME = "target_modelDebugtexas.pkl"
-TARGET_MODEL_NAME = "target_model_census.pkl"
+ # TEXAS TEXAS
+# TESTNAME = "TEXAS_N_TREES_CENTRAL_12DEPTH_20k"
+# PLOT_TITLE = "TEXAS, centralised NTREES"
+ 
+ # PURCHASE PURCHASE
+TESTNAME = "PURCHASE10_REG_MIN_CHILD_WEIGHT3.0_CENTRAL"
+PLOT_TITLE = "PURCHASE 10, centralised MIN_CHILD_WEIGHT3.0"
 
-SAVE = False
+ # MCLASS MCLASS
+# TESTNAME = "MCLASS100_N_TREES_CENTRAL_12D"
+# PLOT_TITLE = "MCLASS 100, centralised NTREES"
+
+# UNIVERAL
+TARGET_MODEL_NAME = "target_model_" + TESTNAME + ".pkl"
+FULLDATA_NAME = "fulldata/fulldata_" + TESTNAME + ".pkl"
+PLOT_NAME = "plot_" + TESTNAME + ".png"
+
 # DATA_PATH = "/home/jaap/Documents/tmp/acquire-valued-shoppers-challenge/"
 # DATA_PATH = "/home/jaap/Documents/JaapCloud/SchoolCloud/Master Thesis/Database/texas/"
 # DATA_PATH = "/home/hacker/cloud_jaap_meerhof/SchoolCloud/Master Thesis/Database/acquire-valued-shoppers-challenge/"
-# DATA_PATH = '/data/BioGrid/meerhofj/texas/'
-
-MAX_DEPTH = 6
-N_TREES = 1
+DATA_PATH = '/data/BioGrid/meerhofj/texas/'
+# getdata = 
+SAVE = False
+MAX_DEPTH = 12
+N_TREES = 100
 ETA = 0.3
 GAMMA = 0.3 #std=0.3
 MIN_CHILD_WEIGHT = 1 # std=1
@@ -40,20 +54,30 @@ N_PARTICIPANTS = 5
 N_BINS = 400
 EA = 1/N_BINS
 
+# X = pickle.load(open(DATA_PATH+"texas_100_v2_features.p", "rb"))
+# y = pickle.load(open(DATA_PATH+"texas_100_v2_labels.p", "rb"))
+# X_, y_, _ = getTEXAS()
+X_, y_, _ = getPURCHASE(10)
+N_CLASSES = 10
+XSIZE = 40_000
+SPLIT = 30_000 
+
+# X_, y_ = make_classification(n_samples=int(XSIZE) , n_features=20, n_informative=10, n_redundant=0, n_classes=N_CLASSES, random_state=50)
+
 def main():
     full_data = []
 
-    for N_TREES in [5, 10, 20, 30, 40, 50, 100]:
-        param = N_TREES
-        paramstr = "N_TREES" + str(param)
-        paramname = "N_TREES"
+    for MIN_CHILD_WEIGHT in [0, 0.1, 0.3, 1, 3, 8, 15, 50]:
+        param = MIN_CHILD_WEIGHT
+        paramstr = "MIN_CHILD_WEIGHT" + str(param)
+        paramname = "MIN_CHILD_WEIGHT"
         random.seed(1)
         # X, y = getDNA()
         # X, y, _ = getCensusCloud()
-        X = pickle.load(open(DATA_PATH+"texas_100_v2_features.p", "rb"))
-        y = pickle.load(open(DATA_PATH+"texas_100_v2_labels.p", "rb"))
-        random_indices = random.sample(range(X.shape[0]), XSIZE)
-        X, y= X[random_indices], y[random_indices]
+        # X = pickle.load(open(DATA_PATH+"texas_100_v2_features.p", "rb"))
+        # y = pickle.load(open(DATA_PATH+"texas_100_v2_labels.p", "rb"))
+        random_indices = random.sample(range(X_.shape[0]), XSIZE)
+        X, y= X_[random_indices], y_[random_indices]
 
         X = np.array(X)
         y = np.array(y)
@@ -77,10 +101,10 @@ def main():
         # target_model.fit(X,y)
 
 
-        X_PAX = np.array(np.array_split(X, N_PARTICIPANTS))
-        y_PAX = np.array(np.array_split(y, N_PARTICIPANTS))
+        # X_PAX = np.array(np.array_split(X, N_PARTICIPANTS))
+        # y_PAX = np.array(np.array_split(y, N_PARTICIPANTS))
         def insert_paramname():
-            return TARGET_MODEL_NAME[:-4] + "_" + paramstr + TARGET_MODEL_NAME[-4:]
+            return "models/" + TARGET_MODEL_NAME[:-4] + "_" + paramstr + TARGET_MODEL_NAME[-4:]
         
         target_model = None
         if SAVE and os.path.exists(insert_paramname()):
@@ -88,18 +112,18 @@ def main():
             target_model = pickle.load(open(insert_paramname(), "rb"))
         else:
             print("> creating target model as no pickle jar exists")
-            target_model = PAX(Params(n_trees=N_TREES, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT, lam=REG_LAMBDA, alpha=REG_ALPHA, eta=ETA, gamma=GAMMA))
-            # target_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="binary:logistic",
-            #                 learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA)
-            # target_model.fit(X,y)
-            target_model.fit(X_PAX, y_PAX, splits)
+            # target_model = PAX(Params(n_trees=N_TREES, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT, lam=REG_LAMBDA, alpha=REG_ALPHA, eta=ETA, gamma=GAMMA))
+            target_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="multi:softmax",
+                            learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA, min_child_weight = MIN_CHILD_WEIGHT)
+            target_model.fit(X,y)
+            # target_model.fit(X_PAX, y_PAX, splits)
             pickle.dump(target_model, open( insert_paramname(), "wb"))
 
         # shadow_model = MLPClassifier(hidden_layer_sizes=(16,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=1000)
         # xgb.config_context(verbosity=3)
 
         shadow_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="multi:softmax", # "multi:softmax"
-                            learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA)
+                            learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA, min_child_weight = MIN_CHILD_WEIGHT)
         # shadow_model = xgb.XGBClassifier(tree_method="exact", objective='binary:logistic', num_class=N_CLASSES, max_depth=MAX_DEPTH, n_estimators=N_TREES, learning_rate=0.1)
 
         # shadow_model = DecisionTreeClassifier(max_depth=6,max_leaf_nodes=100)
@@ -126,10 +150,10 @@ def main():
     labels = [paramname] + labels
     print(labels)
     print(full_data)
-    pickle.dump(full_data, open( "fulldata_PURCHASE_n_trees.pkl", "wb"))
+    pickle.dump(full_data, open( FULLDATA_NAME, "wb"))
     params = Params(N_TREES, MAX_DEPTH, ETA, REG_LAMBDA, REG_ALPHA, GAMMA, MIN_CHILD_WEIGHT, eA = EA, n_bins=N_BINS, n_participants=N_PARTICIPANTS, num_class=10)
     
-    plot_data(np.array(full_data), labels, "PURCHASE_"+ paramname + ".png", params.prettytext())
+    plot_data(np.array(full_data), labels, PLOT_NAME, params.prettytext(), suptext= PLOT_TITLE)
 
 
 if __name__ == "__main__":

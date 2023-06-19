@@ -64,7 +64,7 @@ def plot_data(data: np.array, labels, destination= 'plot.png', name='Sample Text
     plt.tight_layout()
     fig.suptitle(suptext)
     # fig.text(ncols, nrows, 'testtesttest')
-    plt.savefig(destination)
+    plt.savefig("results/" + destination)
     # plt.title("test2")
     # plt.show()
     pass
@@ -235,3 +235,54 @@ def getTexas():
     X = pickle.load(open(DATA_PATH+"texas_100_v2_features.p", "rb"))
     y = pickle.load(open(DATA_PATH+"texas_100_v2_labels.p", "rb"))
     return np.array(X), np.array(y), None
+
+def getTEXASCloud():
+    import urllib.request
+    print("> Downloading dataset texas from JaapCloud1.0...")
+    datalabel = urllib.request.urlopen("https://jaapmeerhof.nl/index.php/s/22EYAFz2YXoBWko/download").read() # label
+    labels = pickle.loads(datalabel)
+
+    dataX = urllib.request.urlopen("https://jaapmeerhof.nl/index.php/s/YsCc5kJ5QmekCHj/download").read() # X
+    X = pickle.loads(dataX)
+
+    datay = urllib.request.urlopen("https://jaapmeerhof.nl/index.php/s/tkWYYAQRGo5kJFn/download").read() # y
+    y = pickle.loads(datay)
+    print("> done downloading from JaapCloud1.0!")
+    return X, y, labels
+
+def getPURCHASE(amount_labels):
+    import urllib.request
+    print("> Downloading dataset texas from JaapCloud1.0...")
+
+    dataX = urllib.request.urlopen("https://jaapmeerhof.nl/index.php/s/5FWyosCLWJaXoHp/download").read() # X
+    X = pickle.loads(dataX)
+    url = None
+    match amount_labels:
+        case 2:
+            url = "https://jaapmeerhof.nl/index.php/s/QzyN4BTeaaiTX5e"
+        case 10:
+            url = "https://jaapmeerhof.nl/index.php/s/xYzz56jHQjMNZCn"
+        case 20:
+            url = "https://jaapmeerhof.nl/index.php/s/ijpbJq2cbWQiSLf"
+        case 50:
+            url = "https://jaapmeerhof.nl/index.php/s/gt2yr7ioAW9NMbi"
+        case 100:
+            url = "https://jaapmeerhof.nl/index.php/s/AB8FrfGR4JXQLFi"
+            
+    datay = urllib.request.urlopen(url + "/download").read() # y
+    y = pickle.loads(datay)
+    print("> done downloading from JaapCloud1.0!")
+    return X, y, None
+
+def getMNIST():
+    from keras.datasets import mnist
+    (train_X, train_y), (test_X, test_y) = mnist.load_data()
+    X = np.vstack((train_X, test_X))
+    y = np.vstack((train_y, test_y))
+    X = np.array(X).reshape(X.shape[0], 28*28)
+    y = np.array(y)
+    return X, y, None
+
+def getTEXASLOCAL(DATAPATH):
+    pass
+    return 1

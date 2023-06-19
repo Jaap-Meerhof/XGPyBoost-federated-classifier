@@ -1,0 +1,1777 @@
+Sender: LSF System <lsfadmin@rivm-lsfsv-l01p>
+Subject: Job 11512301: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Done
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 11:47:02 2023
+Job was executed on host(s) <12*rivm-lsfsv-l01p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 11:47:02 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 11:47:02 2023
+Terminated at Tue Jun 13 12:32:56 2023
+Results reported at Tue Jun 13 12:32:56 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   22301.75 sec.
+    Max Memory :                                 3389 MB
+    Average Memory :                             1960.52 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                23
+    Run time :                                   2754 sec.
+    Turnaround time :                            2754 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.64
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.77
+> Attack precision: 0.75
+n_trees=5
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.69
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=10
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.73
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.84
+> Attack precision: 0.79
+n_trees=25
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=50
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=300
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+['N_TREES', 'acc_training_target', 'acc_test_target', 'overfit_target', 'acc_training_shadow', 'acc_test_shadow', 'overfit_shadow', 'acc_X_attack', 'acc_other_attack', 'precision_50_attack', 'acc_50_attack']
+[[5, 0.9963, 0.6529, 0.3433999999999999, 0.9973, 0.6436, 0.3537, 0.8346, 0.7114, 0.7430555555555556, 0.773], [10, 0.9998, 0.691, 0.3088000000000001, 0.9994, 0.6854, 0.31399999999999995, 0.9047, 0.7519, 0.7847848716169327, 0.8283], [25, 1.0, 0.7386, 0.26139999999999997, 1.0, 0.7342, 0.26580000000000004, 0.9244, 0.7617, 0.7950460135890599, 0.84305], [50, 1.0, 0.7599, 0.24009999999999998, 1.0, 0.7562, 0.24380000000000002, 0.9103, 0.7493, 0.7840654608096469, 0.8298], [100, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [300, 1.0, 0.7632, 0.2368, 1.0, 0.7612, 0.2388, 0.9109, 0.75, 0.7846498406408821, 0.83045]]
+
+
+PS:
+
+Read file <errorPURCHASE.txt> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@rivm-lsfsv-l04p>
+Subject: Job 11512323: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Exited
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 12:42:35 2023
+Job was executed on host(s) <12*rivm-lsfsv-l04p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 12:42:36 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 12:42:36 2023
+Terminated at Tue Jun 13 12:42:43 2023
+Results reported at Tue Jun 13 12:42:43 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+TERM_OWNER: job killed by owner.
+Exited with exit code 130.
+
+Resource usage summary:
+
+    CPU time :                                   1.60 sec.
+    Max Memory :                                 96 MB
+    Average Memory :                             72.33 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                12
+    Run time :                                   7 sec.
+    Turnaround time :                            8 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+
+
+PS:
+
+Read file <errorPURCHASE.txt> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@rivm-lsfsv-l05p>
+Subject: Job 11512328: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Exited
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 13:01:41 2023
+Job was executed on host(s) <12*rivm-lsfsv-l05p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 13:01:42 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 13:01:42 2023
+Terminated at Tue Jun 13 13:02:11 2023
+Results reported at Tue Jun 13 13:02:11 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+TERM_OWNER: job killed by owner.
+Exited with exit code 130.
+
+Resource usage summary:
+
+    CPU time :                                   2.01 sec.
+    Max Memory :                                 123 MB
+    Average Memory :                             91.00 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                12
+    Run time :                                   29 sec.
+    Turnaround time :                            30 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+
+
+PS:
+
+Read file <errorPURCHASE.txt> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@rivm-lsfsv-l03p>
+Subject: Job 11512330: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Done
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 13:03:22 2023
+Job was executed on host(s) <12*rivm-lsfsv-l03p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 13:03:22 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 13:03:22 2023
+Terminated at Tue Jun 13 14:22:24 2023
+Results reported at Tue Jun 13 14:22:24 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   39032.42 sec.
+    Max Memory :                                 3409 MB
+    Average Memory :                             1716.03 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                23
+    Run time :                                   4742 sec.
+    Turnaround time :                            4742 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.82
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.10
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.81
+> Attack precision: 0.76
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.30
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.72
+> Attack precision: 0.68
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=8.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.79
+> Attack precision: 0.74
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=1.50
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.76
+> Attack precision: 0.72
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=3.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.71
+> Attack precision: 0.67
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=10.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 0.84
+> shadow accuracy: 0.71
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.53
+> Attack precision: 0.53
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=100.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+['REG_ALPHA', 'acc_training_target', 'acc_test_target', 'overfit_target', 'acc_training_shadow', 'acc_test_shadow', 'overfit_shadow', 'acc_X_attack', 'acc_other_attack', 'precision_50_attack', 'acc_50_attack']
+[[0, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [0.1, 1.0, 0.7675, 0.23250000000000004, 1.0, 0.7662, 0.2338, 0.902, 0.7494, 0.7825785181329169, 0.8257], [0.3, 1.0, 0.7677, 0.23229999999999995, 1.0, 0.7666, 0.23340000000000005, 0.8929, 0.7293, 0.7673599174974218, 0.8111], [0, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [8, 0.9993, 0.7801, 0.21919999999999995, 0.9996, 0.7709, 0.22870000000000001, 0.8047, 0.6389, 0.690255618459427, 0.7218], [1.5, 1.0, 0.7778, 0.22219999999999995, 1.0, 0.77, 0.22999999999999998, 0.8729, 0.6978, 0.7428303974129862, 0.78535], [3, 1.0, 0.7792, 0.2208, 1.0, 0.7732, 0.2268, 0.8608, 0.6737, 0.7251284643248253, 0.76725], [10, 0.9982, 0.7756, 0.22260000000000002, 0.9992, 0.7706, 0.22860000000000003, 0.8008, 0.6137, 0.6745851234099908, 0.70725], [100, 0.8373, 0.7096, 0.12770000000000004, 0.8373, 0.7071, 0.1302000000000001, 0.5212, 0.5427, 0.5326520183955034, 0.53195]]
+
+
+PS:
+
+Read file <errorPURCHASE.txt> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@rivm-lsfsv-l12p>
+Subject: Job 11512329: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Done
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 13:02:24 2023
+Job was executed on host(s) <12*rivm-lsfsv-l12p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 13:02:25 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 13:02:25 2023
+Terminated at Tue Jun 13 14:29:29 2023
+Results reported at Tue Jun 13 14:29:29 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   41471.98 sec.
+    Max Memory :                                 3655 MB
+    Average Memory :                             1813.63 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                23
+    Run time :                                   5224 sec.
+    Turnaround time :                            5225 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=0.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=0.10
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=0.30
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=0.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=8.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.50
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=3.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=10.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=100.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+['MIN_CHILD_WEIGHT', 'acc_training_target', 'acc_test_target', 'overfit_target', 'acc_training_shadow', 'acc_test_shadow', 'overfit_shadow', 'acc_X_attack', 'acc_other_attack', 'precision_50_attack', 'acc_50_attack']
+[[0, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [0.1, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [0.3, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [0, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [8, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [1.5, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [3, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [10, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [100, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293]]
+
+
+PS:
+
+Read file <errorPURCHASE.txt> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@rivm-lsfsv-l01p>
+Subject: Job 11512322: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Done
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 12:42:11 2023
+Job was executed on host(s) <12*rivm-lsfsv-l01p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 12:42:11 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 12:42:11 2023
+Terminated at Tue Jun 13 14:34:47 2023
+Results reported at Tue Jun 13 14:34:47 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   76481.95 sec.
+    Max Memory :                                 2203 MB
+    Average Memory :                             1766.71 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                23
+    Run time :                                   6756 sec.
+    Turnaround time :                            6756 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> creating target model as no pickle jar exists
+> approx base accuracy: 0.95
+> shadow accuracy: 0.25
+(20000, 100)
+(20000, 100)
+> Attack accuracy: 0.70
+> Attack precision: 0.68
+n_trees=5
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=100
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.28
+(20000, 100)
+(20000, 100)
+> Attack accuracy: 0.84
+> Attack precision: 0.82
+n_trees=10
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=100
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.33
+(20000, 100)
+(20000, 100)
+> Attack accuracy: 0.92
+> Attack precision: 0.89
+n_trees=25
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=100
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.34
+(20000, 100)
+(20000, 100)
+> Attack accuracy: 0.92
+> Attack precision: 0.89
+n_trees=50
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=100
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.34
+(20000, 100)
+(20000, 100)
+> Attack accuracy: 0.92
+> Attack precision: 0.89
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=100
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.34
+(20000, 100)
+(20000, 100)
+> Attack accuracy: 0.92
+> Attack precision: 0.89
+n_trees=300
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=100
+['N_TREES', 'acc_training_target', 'acc_test_target', 'overfit_target', 'acc_training_shadow', 'acc_test_shadow', 'overfit_shadow', 'acc_X_attack', 'acc_other_attack', 'precision_50_attack', 'acc_50_attack']
+[[5, 0.9463, 0.2516, 0.6947000000000001, 0.9493, 0.2482, 0.7011000000000001, 0.7449, 0.6578, 0.6852175512832306, 0.70135], [10, 0.9981, 0.2843, 0.7138, 0.9981, 0.2808, 0.7173, 0.8821, 0.8113, 0.8237766156144939, 0.8467], [25, 1.0, 0.3304, 0.6696, 1.0, 0.3294, 0.6706, 0.9526, 0.8811, 0.889034064395707, 0.91685], [50, 1.0, 0.3368, 0.6632, 1.0, 0.3352, 0.6648000000000001, 0.9512, 0.8848, 0.891972993248312, 0.918], [100, 1.0, 0.3371, 0.6629, 1.0, 0.3352, 0.6648000000000001, 0.9482, 0.8877, 0.8941065535124941, 0.91795], [300, 1.0, 0.337, 0.663, 1.0, 0.3354, 0.6646000000000001, 0.9519, 0.8824, 0.8900420757363254, 0.91715]]
+
+
+PS:
+
+Read file <errorPURCHASE.txt> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@rivm-lsfsv-l07p>
+Subject: Job 11512331: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Done
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 13:03:58 2023
+Job was executed on host(s) <12*rivm-lsfsv-l07p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 13:03:58 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 13:03:58 2023
+Terminated at Tue Jun 13 14:38:35 2023
+Results reported at Tue Jun 13 14:38:35 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   47196.67 sec.
+    Max Memory :                                 3865 MB
+    Average Memory :                             1795.60 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                23
+    Run time :                                   5677 sec.
+    Turnaround time :                            5677 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.75
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.85
+> Attack precision: 0.80
+n_trees=100
+max_depth=12
+eta=0.30
+lam=0.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.74
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.84
+> Attack precision: 0.79
+n_trees=100
+max_depth=12
+eta=0.30
+lam=0.10
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.75
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.79
+n_trees=100
+max_depth=12
+eta=0.30
+lam=0.30
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.75
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.85
+> Attack precision: 0.80
+n_trees=100
+max_depth=12
+eta=0.30
+lam=0.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.79
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.79
+> Attack precision: 0.74
+n_trees=100
+max_depth=12
+eta=0.30
+lam=8.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.82
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.50
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.78
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.81
+> Attack precision: 0.76
+n_trees=100
+max_depth=12
+eta=0.30
+lam=3.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.79
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.79
+> Attack precision: 0.74
+n_trees=100
+max_depth=12
+eta=0.30
+lam=10.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.80
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.71
+> Attack precision: 0.67
+n_trees=100
+max_depth=12
+eta=0.30
+lam=100.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+['REG_LAMBDA', 'acc_training_target', 'acc_test_target', 'overfit_target', 'acc_training_shadow', 'acc_test_shadow', 'overfit_shadow', 'acc_X_attack', 'acc_other_attack', 'precision_50_attack', 'acc_50_attack']
+[[0, 1.0, 0.7474, 0.25260000000000005, 1.0, 0.7456, 0.25439999999999996, 0.932, 0.7609, 0.7958329775424814, 0.84645], [0.1, 1.0, 0.7491, 0.2509, 1.0, 0.7444, 0.25560000000000005, 0.9246, 0.7569, 0.7918129656589877, 0.84075], [0.3, 1.0, 0.7552, 0.24480000000000002, 1.0, 0.7514, 0.24860000000000004, 0.9066, 0.7645, 0.7938008930916732, 0.83555], [0, 1.0, 0.7474, 0.25260000000000005, 1.0, 0.7456, 0.25439999999999996, 0.932, 0.7609, 0.7958329775424814, 0.84645], [8, 1.0, 0.7941, 0.20589999999999997, 1.0, 0.7896, 0.21040000000000003, 0.8904, 0.6969, 0.7460410557184751, 0.79365], [1.5, 1.0, 0.772, 0.22799999999999998, 1.0, 0.766, 0.23399999999999999, 0.8963, 0.7364, 0.7727390292266575, 0.81635], [3, 1.0, 0.7761, 0.2239, 1.0, 0.7769, 0.22309999999999997, 0.9015, 0.722, 0.7643069097075031, 0.81175], [10, 1.0, 0.7949, 0.20509999999999995, 1.0, 0.7919, 0.20809999999999995, 0.8881, 0.6853, 0.7383604921849019, 0.7867], [100, 1.0, 0.8078, 0.19220000000000004, 1.0, 0.8015, 0.1985, 0.8229, 0.6154, 0.6814906832298137, 0.71915]]
+
+
+PS:
+
+Read file <errorPURCHASE.txt> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@rivm-lsfsv-l06p>
+Subject: Job 11512501: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Done
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 14:38:03 2023
+Job was executed on host(s) <12*rivm-lsfsv-l06p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 14:38:04 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 14:38:04 2023
+Terminated at Tue Jun 13 15:44:08 2023
+Results reported at Tue Jun 13 15:44:08 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   35999.67 sec.
+    Max Memory :                                 3593 MB
+    Average Memory :                             1867.82 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                23
+    Run time :                                   3964 sec.
+    Turnaround time :                            3965 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.75
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.84
+> Attack precision: 0.79
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=0.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.75
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.84
+> Attack precision: 0.79
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=0.10
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.79
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=0.30
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.78
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.81
+> Attack precision: 0.76
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=3.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.80
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.77
+> Attack precision: 0.72
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=8.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.80
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.74
+> Attack precision: 0.70
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=15.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.82
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.65
+> Attack precision: 0.62
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=50.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+['MIN_CHILD_WEIGHT', 'acc_training_target', 'acc_test_target', 'overfit_target', 'acc_training_shadow', 'acc_test_shadow', 'overfit_shadow', 'acc_X_attack', 'acc_other_attack', 'precision_50_attack', 'acc_50_attack']
+[[0, 1.0, 0.7607, 0.23929999999999996, 1.0, 0.754, 0.246, 0.9104, 0.7622, 0.7928932241769726, 0.8363], [0.1, 1.0, 0.7607, 0.23929999999999996, 1.0, 0.754, 0.246, 0.9104, 0.7622, 0.7928932241769726, 0.8363], [0.3, 1.0, 0.7589, 0.24109999999999998, 1.0, 0.76, 0.24, 0.9104, 0.7593, 0.7908956650160716, 0.83485], [1, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [3, 1.0, 0.7784, 0.22160000000000002, 1.0, 0.7756, 0.22440000000000004, 0.9006, 0.7156, 0.76, 0.8081], [8, 1.0, 0.799, 0.20099999999999996, 1.0, 0.7971, 0.20289999999999997, 0.8738, 0.6822, 0.7332997650218194, 0.778], [15, 1.0, 0.8115, 0.1885, 1.0, 0.8027, 0.19730000000000003, 0.8517, 0.637, 0.7011607804396147, 0.74435], [50, 0.9992, 0.8166, 0.18259999999999998, 0.9991, 0.8183, 0.18079999999999996, 0.7586, 0.5402, 0.6226198292843073, 0.6494]]
+
+
+PS:
+
+Read file <errorPURCHASE.txt> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@rivm-lsfsv-l04p>
+Subject: Job 11512499: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Done
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 14:23:27 2023
+Job was executed on host(s) <12*rivm-lsfsv-l04p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 14:23:27 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 14:23:27 2023
+Terminated at Tue Jun 13 15:44:30 2023
+Results reported at Tue Jun 13 15:44:30 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   39379.74 sec.
+    Max Memory :                                 3555 MB
+    Average Memory :                             1718.34 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                23
+    Run time :                                   4862 sec.
+    Turnaround time :                            4863 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.82
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.10
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.81
+> Attack precision: 0.76
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.30
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.80
+> Attack precision: 0.75
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.80
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.79
+> Attack precision: 0.74
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=1.50
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.76
+> Attack precision: 0.72
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=3.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.71
+> Attack precision: 0.67
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=10.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 0.93
+> shadow accuracy: 0.74
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.57
+> Attack precision: 0.57
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=50.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+['REG_ALPHA', 'acc_training_target', 'acc_test_target', 'overfit_target', 'acc_training_shadow', 'acc_test_shadow', 'overfit_shadow', 'acc_X_attack', 'acc_other_attack', 'precision_50_attack', 'acc_50_attack']
+[[0, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [0.1, 1.0, 0.7675, 0.23250000000000004, 1.0, 0.7662, 0.2338, 0.902, 0.7494, 0.7825785181329169, 0.8257], [0.3, 1.0, 0.7677, 0.23229999999999995, 1.0, 0.7666, 0.23340000000000005, 0.8929, 0.7293, 0.7673599174974218, 0.8111], [0.8, 1.0, 0.772, 0.22799999999999998, 1.0, 0.7662, 0.2338, 0.8855, 0.7139, 0.75580402867873, 0.7997], [1.5, 1.0, 0.7778, 0.22219999999999995, 1.0, 0.77, 0.22999999999999998, 0.8729, 0.6978, 0.7428303974129862, 0.78535], [3, 1.0, 0.7792, 0.2208, 1.0, 0.7732, 0.2268, 0.8608, 0.6737, 0.7251284643248253, 0.76725], [10, 0.9982, 0.7756, 0.22260000000000002, 0.9992, 0.7706, 0.22860000000000003, 0.8008, 0.6137, 0.6745851234099908, 0.70725], [50, 0.9288, 0.7466, 0.18219999999999992, 0.9223, 0.7437, 0.17859999999999998, 0.5773, 0.5717, 0.574085123309467, 0.5745]]
+
+
+PS:
+
+Read file <errorPURCHASE.txt> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@rivm-lsfsv-l09p>
+Subject: Job 11512498: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Done
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 14:22:49 2023
+Job was executed on host(s) <12*rivm-lsfsv-l09p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 14:22:49 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 14:22:49 2023
+Terminated at Tue Jun 13 15:49:28 2023
+Results reported at Tue Jun 13 15:49:28 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   42552.12 sec.
+    Max Memory :                                 3489 MB
+    Average Memory :                             1800.70 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                23
+    Run time :                                   5199 sec.
+    Turnaround time :                            5199 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.75
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.85
+> Attack precision: 0.80
+n_trees=100
+max_depth=12
+eta=0.30
+lam=0.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.74
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.84
+> Attack precision: 0.79
+n_trees=100
+max_depth=12
+eta=0.30
+lam=0.10
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.75
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.79
+n_trees=100
+max_depth=12
+eta=0.30
+lam=0.30
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=0.80
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.77
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.82
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.50
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.78
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.81
+> Attack precision: 0.76
+n_trees=100
+max_depth=12
+eta=0.30
+lam=3.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.79
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.79
+> Attack precision: 0.74
+n_trees=100
+max_depth=12
+eta=0.30
+lam=10.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.80
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.74
+> Attack precision: 0.70
+n_trees=100
+max_depth=12
+eta=0.30
+lam=50.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+['REG_LAMBDA', 'acc_training_target', 'acc_test_target', 'overfit_target', 'acc_training_shadow', 'acc_test_shadow', 'overfit_shadow', 'acc_X_attack', 'acc_other_attack', 'precision_50_attack', 'acc_50_attack']
+[[0, 1.0, 0.7474, 0.25260000000000005, 1.0, 0.7456, 0.25439999999999996, 0.932, 0.7609, 0.7958329775424814, 0.84645], [0.1, 1.0, 0.7491, 0.2509, 1.0, 0.7444, 0.25560000000000005, 0.9246, 0.7569, 0.7918129656589877, 0.84075], [0.3, 1.0, 0.7552, 0.24480000000000002, 1.0, 0.7514, 0.24860000000000004, 0.9066, 0.7645, 0.7938008930916732, 0.83555], [0.8, 1.0, 0.769, 0.23099999999999998, 1.0, 0.756, 0.244, 0.9029, 0.7587, 0.7891102954029016, 0.8308], [1.5, 1.0, 0.772, 0.22799999999999998, 1.0, 0.766, 0.23399999999999999, 0.8963, 0.7364, 0.7727390292266575, 0.81635], [3, 1.0, 0.7761, 0.2239, 1.0, 0.7769, 0.22309999999999997, 0.9015, 0.722, 0.7643069097075031, 0.81175], [10, 1.0, 0.7949, 0.20509999999999995, 1.0, 0.7919, 0.20809999999999995, 0.8881, 0.6853, 0.7383604921849019, 0.7867], [50, 1.0, 0.8087, 0.19130000000000003, 1.0, 0.8032, 0.19679999999999997, 0.8505, 0.647, 0.7066888242625675, 0.74875]]
+
+
+PS:
+
+Read file <errorPURCHASE.txt> for stderr output of this job.
+
+Sender: LSF System <lsfadmin@rivm-lsfsv-l09p>
+Subject: Job 11512500: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Done
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 14:24:57 2023
+Job was executed on host(s) <12*rivm-lsfsv-l09p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 14:24:57 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 14:24:57 2023
+Terminated at Tue Jun 13 15:49:39 2023
+Results reported at Tue Jun 13 15:49:39 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   40384.24 sec.
+    Max Memory :                                 3578 MB
+    Average Memory :                             1807.29 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                23
+    Run time :                                   5082 sec.
+    Turnaround time :                            5082 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=0.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=0.10
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=0.30
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=3.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=8.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=15.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+> creating target model as no pickle jar exists
+> approx base accuracy: 1.00
+> shadow accuracy: 0.76
+(20000, 10)
+(20000, 10)
+> Attack accuracy: 0.83
+> Attack precision: 0.78
+n_trees=100
+max_depth=12
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=50.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=10
+['MIN_CHILD_WEIGHT', 'acc_training_target', 'acc_test_target', 'overfit_target', 'acc_training_shadow', 'acc_test_shadow', 'overfit_shadow', 'acc_X_attack', 'acc_other_attack', 'precision_50_attack', 'acc_50_attack']
+[[0, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [0.1, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [0.3, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [1, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [3, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [8, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [15, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293], [50, 1.0, 0.7632, 0.2368, 1.0, 0.7611, 0.2389, 0.9088, 0.7498, 0.7841242450388266, 0.8293]]
+
+
+PS:
+
+Read file <errorPURCHASE.txt> for stderr output of this job.
+

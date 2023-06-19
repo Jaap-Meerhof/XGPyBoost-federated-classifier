@@ -35,6 +35,7 @@ SAVE = False
 N_PARTICIPANTS = 5
 
 TARGET_MODEL_NAME = "target_modelMCLASS_500_100trees_eta1.pkl"
+
 SAVE = False
 def main():
     full_data=[]
@@ -59,8 +60,9 @@ def main():
             target_model = pickle.load(open(TARGET_MODEL_NAME, "rb"))
         else:
             print("> creating target model as no pickle jar exists")
-            target_model = PAX(params)
-            target_model.fit(X_PAX, y_PAX, splits)
+            # target_model = PAX(params)
+            # target_model.fit(X_PAX, y_PAX, splits)
+            
             pickle.dump(target_model, open( TARGET_MODEL_NAME, "wb"))
 
         # shadow_model = MLPClassifier(hidden_layer_sizes=(16,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=1000)
@@ -73,8 +75,8 @@ def main():
         # attack_model = DecisionTreeClassifier(max_depth=6,max_leaf_nodes=10)
 
         # attack_model = MLPClassifier(hidden_layer_sizes=(10,10), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=2000)
-        y_pred = target_model.predict(X_PAX[0])
-        print("> approx base accuracy: %.2f" % (accuracy_score(y_PAX[0], y_pred)))
+        # y_pred = target_model.predict(X_PAX[0])
+        # print("> approx base accuracy: %.2f" % (accuracy_score(y_PAX[0], y_pred)))
         data = membership_inference_attack(shadow_fake=shadow_fake, target_model=target_model, shadow_model=shadow_model, attack_model=attack_model, X=X, orininal_y=y)
         data = [N_TREES] + data
         full_data.append(data)

@@ -44,6 +44,7 @@ def main():
     # test_iris()
     # test_purchase_100()
     test_texas()
+    test_purchase_100()
     # test_make_classification()
 
 def test_MNIST():
@@ -199,9 +200,9 @@ def test_purchase_100():
     N_BINS = 400
     EA = 1/N_BINS
     # data = np.load('/home/hacker/Documents/datasets/purchase100_2.npz')
-    data = np.load('/home/jaap/Documents/tmp/purchase-100/purchase100.npz')
+    # data = np.load('/home/jaap/Documents/tmp/purchase-100/purchase100.npz')
 
-    # data = np.load('/data/BioGrid/meerhofj/purchase100_2.npz')
+    data = np.load('/data/BioGrid/meerhofj/acquire-valued-shoppers-challenge/purchase100_2.npz')
     print("> getting purchase100 dataset... ")
     print("> got dataset!")
     features = data['features'][:20_000]

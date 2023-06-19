@@ -1,0 +1,48 @@
+Sender: LSF System <lsfadmin@rivm-lsfsv-l09p>
+Subject: Job 11515813: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/SimplePAXtest.py> in cluster <RIVM-LSF-PRD> Exited
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/SimplePAXtest.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 17:06:04 2023
+Job was executed on host(s) <24*rivm-lsfsv-l09p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Tue Jun 13 17:06:04 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Tue Jun 13 17:06:04 2023
+Terminated at Tue Jun 13 18:05:08 2023
+Results reported at Tue Jun 13 18:05:08 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/SimplePAXtest.py
+------------------------------------------------------------
+
+TERM_RUNLIMIT: job killed after reaching LSF run time limit.
+Exited with exit code 140.
+
+Resource usage summary:
+
+    CPU time :                                   4662.02 sec.
+    Max Memory :                                 4330 MB
+    Average Memory :                             3912.97 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                136
+    Run time :                                   3544 sec.
+    Turnaround time :                            3544 sec.
+
+The output (if any) follows:
+
+> getting purchase100 dataset... 
+> got dataset!
+> running normal xgboost first....
+> Accuracy normal XGBoost: 0.48
+> Degree of overfitting the larger the more overfitting: 0.5124375
+> running federated XGBoost...
+
+
+PS:
+
+Read file <errorSIMPLE.txt> for stderr output of this job.
+
