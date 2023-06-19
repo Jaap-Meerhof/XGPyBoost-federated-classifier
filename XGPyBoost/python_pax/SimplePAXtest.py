@@ -17,7 +17,7 @@ from keras.datasets import cifar10
 import utils
 import pickle
 import os
-
+from tests.membership_helpers import getTexas
 import numpy as np
 
 import cProfile # DEBUG
@@ -39,10 +39,11 @@ params = Params(n_trees=N_TREES, max_depth=MAX_DEPTH, eta=ETA, lam=REG_LAMBDA,
                 alpha=REG_ALPHA, gamma=GAMMA, min_child_weight=MIN_CHILD_WEIGHT, max_delta_step=0, objective=softprob )
 def main():
     # test_cifar10()
-    test_MNIST()
+    # test_MNIST()
     # test_airline()
     # test_iris()
     # test_purchase_100()
+    test_texas()
     # test_make_classification()
 
 def test_MNIST():
@@ -58,7 +59,7 @@ def test_MNIST():
 
 def run_both(X_train, X_test, y_train, y_test, params:Params):
     print("> running normal xgboost first....")
-    model = XGBClassifier(max_depth=params.max_depth, tree_method='exact', objective="multi:softmax",
+    model = XGBClassifier(max_depth=params.max_depth, objective="multi:softmax",
                            learning_rate=params.eta, n_estimators=params.n_trees, gamma=params.gamma, reg_alpha=params.alpha, reg_lambda=params.lam)
     model.fit(X_train, y_train)
 
@@ -96,6 +97,12 @@ def test_iris():
     run_both(X_train, X_test, y_train, y_test, params)
     pass
 
+def test_texas():
+    X, y, _ = getTexas()
+    X = X[20_000:]
+    y = y[20_000:]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    run_both(X_train, X_test, y_train, y_test, params)
 
 def test_cifar10():
     print("testing cifar10")

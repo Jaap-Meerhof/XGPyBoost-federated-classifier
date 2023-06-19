@@ -2,7 +2,7 @@ import random
 import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
-from membershipresults import MembershipResults
+# from membershipresults import MembershipResults
 import csv
 import sys
 import os
@@ -227,3 +227,11 @@ def getCensusCloud():
     y = pickle.loads(datay)
     print("> done downloading from JaapCloud1.0!")
     return X, y, labels
+
+def getTexas():
+    """_summary_
+    """
+    DATA_PATH = "/home/jaap/Documents/JaapCloud/SchoolCloud/Master Thesis/Database/texas/"
+    X = pickle.load(open(DATA_PATH+"texas_100_v2_features.p", "rb"))
+    y = pickle.load(open(DATA_PATH+"texas_100_v2_labels.p", "rb"))
+    return np.array(X), np.array(y), None
