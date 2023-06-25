@@ -56,7 +56,7 @@ class TreeNode:
         gain_left = self.calc_gain(G_l, H_l, params)
         gain_right = self.calc_gain(G_r, H_r, params)
         gain_root = self.calc_gain(G, H, params)
-
+        # 1/2 * ((GL*GL / (HL + lamb)) + (GR*GR / (HR + lamb)) - (G*G / (H + lamb))) - gamma
         gain = gain_left + gain_right - gain_root
 
         # make gain 0 (so don't split) if either child violates min_child_weight condition

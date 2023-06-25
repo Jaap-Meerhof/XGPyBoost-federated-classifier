@@ -1,4 +1,4 @@
-from PAX import PAX
+from PAX import PAX as PAXclass
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from objectives import softprob
@@ -17,19 +17,19 @@ from keras.datasets import cifar10
 import utils
 import pickle
 import os
-from tests.membership_helpers import getTexas
+from tests.membership_helpers import *
 import numpy as np
 
 import cProfile # DEBUG
 import time  # DEBUG
 
-MAX_DEPTH = 25
-N_TREES = 5
+MAX_DEPTH = 12
+N_TREES = 30
 ETA = 1
-GAMMA = 0.2 #std=0.3
-MIN_CHILD_WEIGHT = 0.1 # std=1
+GAMMA = 0.3 #std=0.3
+MIN_CHILD_WEIGHT = 1 # std=1
 REG_ALPHA=0 #std =0
-REG_LAMBDA=0.5
+REG_LAMBDA=1
 N_PARTICIPANTS = 3
 
 N_BINS = 400
@@ -44,7 +44,7 @@ def main():
     # test_iris()
     # test_purchase_100()
     test_texas()
-    test_purchase_100()
+    # test_purchase_100()
     # test_make_classification()
 
 def test_MNIST():
@@ -78,7 +78,7 @@ def run_both(X_train, X_test, y_train, y_test, params:Params):
     X_train_split = np.array_split(X_train, N_PARTICIPANTS)
     y_train_split = np.array_split(y_train, N_PARTICIPANTS)
     print("> running federated XGBoost...")
-    pax = PAX(params)
+    pax = PAXclass(params)
     pax.fit(X_train_split, y_train_split, splits)
 
     accuracy_test = accuracy_score(y_test, pax.predict(X_test))
@@ -99,9 +99,10 @@ def test_iris():
     pass
 
 def test_texas():
+    # X, y, _ = getTEXASCloud()
     X, y, _ = getTexas()
-    X = X[20_000:]
-    y = y[20_000:]
+    X = X[:30_000]
+    y = y[:30_000]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
     run_both(X_train, X_test, y_train, y_test, params)
 
@@ -148,7 +149,7 @@ def test_cifar10():
 
     model = XGPyBoostClass(n_trees=N_TREES, obj=softprob, eta=ETA, gamma=GAMMA, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT)
 
-    pax = PAX(model)
+    pax = PAXclass(model)
     pax.fit(X_train, y_train, EA, N_TREES, softprob, N_BINS, splits)
 
     preds_X = pax.predict(X_test)

@@ -232,6 +232,7 @@ def getTexas():
     """_summary_
     """
     DATA_PATH = "/home/jaap/Documents/JaapCloud/SchoolCloud/Master Thesis/Database/texas/"
+    DATA_PATH = "/home/hacker/cloud_jaap_meerhof/SchoolCloud/Master Thesis/Database/texas/"
     X = pickle.load(open(DATA_PATH+"texas_100_v2_features.p", "rb"))
     y = pickle.load(open(DATA_PATH+"texas_100_v2_labels.p", "rb"))
     return np.array(X), np.array(y), None

@@ -6,16 +6,16 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 from XGPyBoostBinary import *
-
+from python_pax.tests.membership_helpers import getPURCHASE
 np.random.seed(1234)
 
 def main():
     print("starting tests")
     n_classes = 2
-    X, y = make_classification(n_samples=2250, n_features=20, n_informative=4, n_redundant=0, n_classes=n_classes, random_state=42)
-
+    # X, y = make_classification(n_samples=2250, n_features=20, n_informative=4, n_redundant=0, n_classes=n_classes, random_state=42)
+    X, y, _ = getPURCHASE(2)
     X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.33)
-    model = XGPyBoostBinary(n_trees=5, obj=logistic_obj, eta=0.3, gamma=0.5, max_depth=6, min_child_weight=1.0, )
+    model = XGPyBoostBinary(n_trees=5, obj=logistic_obj, eta=0.3, gamma=0.5, max_depth=3, min_child_weight=1.0, )
     model.fit(X_train,y_train)
     preds = model.predict(X_test)
     # print(preds)

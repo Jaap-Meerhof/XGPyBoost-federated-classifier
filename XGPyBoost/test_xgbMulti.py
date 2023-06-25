@@ -6,16 +6,16 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn import datasets
 from XGPyBoostMulti import *
-
+from python_pax.tests.membership_helpers import getPURCHASE
 
 import cProfile
 
 np.random.seed(1234)
 
-MAX_DEPTH = 6
-N_TREES = 10
+MAX_DEPTH = 4
+N_TREES = 5
 ETA = 1
-GAMMA = 1 #std=0.3
+GAMMA = 0.5 #std=0.3 no 0
 MIN_CHILD_WEIGHT = 1 # std=1
 REG_ALPHA=0 #std =0
 REG_LAMBDA=1
@@ -24,16 +24,17 @@ REG_LAMBDA=1
 def main():
     print("starting tests")
     n_classes = 5
-    X, y = make_classification(n_samples=2250, n_features=20, n_informative=4, n_redundant=0, n_classes=n_classes, random_state=42)
-    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.33)
+    X, y, _ = getPURCHASE(10)
+    # X, y = make_classification(n_samples=2250, n_features=20, n_informative=4, n_redundant=0, n_classes=n_classes, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=10_000, train_size=10_000)
 
-    digits = datasets.load_digits()
-    images = digits.images
-    print(images[0])
-    targets = digits.target
-    print(targets[0])
-    images = images.reshape(1797, 8*8)
-    X_train, X_test, y_train, y_test = train_test_split(images, targets, test_size=0.2)
+    # digits = datasets.load_digits()
+    # images = digits.images
+    # print(images[0])
+    # targets = digits.target
+    # print(targets[0])
+    # images = images.reshape(1797, 8*8)
+    # X_train, X_test, y_train, y_test = train_test_split(images, targets, test_size=0.2)
 
 
     model = XGPyBoostMulti(n_trees=N_TREES, obj=softprob_obj_tmp, eta=ETA, gamma=GAMMA, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT)
@@ -54,5 +55,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    cProfile.run('main()', sort='cumtime')
+    main()
+    # cProfile.run('main()', sort='cumtime')
