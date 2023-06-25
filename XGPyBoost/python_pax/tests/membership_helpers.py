@@ -253,7 +253,7 @@ def getTEXASCloud():
 
 def getPURCHASE(amount_labels):
     import urllib.request
-    print("> Downloading dataset texas from JaapCloud1.0...")
+    print("> Downloading dataset purchase from JaapCloud1.0...")
 
     dataX = urllib.request.urlopen("https://jaapmeerhof.nl/index.php/s/5FWyosCLWJaXoHp/download").read() # X
     X = pickle.loads(dataX)
