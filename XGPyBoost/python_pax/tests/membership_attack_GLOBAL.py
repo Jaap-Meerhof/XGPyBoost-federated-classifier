@@ -24,8 +24,8 @@ SPLIT = XSIZE-(XSIZE//4) # XSIZE//2
 # PLOT_TITLE = "TEXAS, centralised NTREES"
  
  # PURCHASE PURCHASE
-TESTNAME = "PURCHASE10_REG_MIN_CHILD_WEIGHT3.0_CENTRAL"
-PLOT_TITLE = "PURCHASE 10, centralised MIN_CHILD_WEIGHT3.0"
+TESTNAME = "PURCHASE10_DEBUG"
+PLOT_TITLE = "PURCHASE 10, centralised DEBUG"
 
  # MCLASS MCLASS
 # TESTNAME = "MCLASS100_N_TREES_CENTRAL_12D"
@@ -67,7 +67,7 @@ SPLIT = 30_000
 def main():
     full_data = []
 
-    for MIN_CHILD_WEIGHT in [0, 0.1, 0.3, 1, 3, 8, 15, 50]:
+    for MIN_CHILD_WEIGHT in [1]:
         param = MIN_CHILD_WEIGHT
         paramstr = "MIN_CHILD_WEIGHT" + str(param)
         paramname = "MIN_CHILD_WEIGHT"

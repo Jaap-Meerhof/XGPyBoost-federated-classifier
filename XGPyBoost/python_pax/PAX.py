@@ -67,7 +67,7 @@ class PAX:
             for i in range(amount_participants): # multithread?
                 Pi:PAXParticipant = P[i]
                 Pi.recieve_model(A.getmodel())
-                Pi.predict()
+                Pi.predict(self.params.eta)
                 gpi, hpi = Pi.calculatedifferentials(self.params.objective)
                 DXpi = Pi.getDXpi()
                 DA.append(DXpi) # line 17 # TODO take union
@@ -270,7 +270,7 @@ class PAXParticipant:
     def recieve_model(self, model):
         self.model = model
 
-    def predict(self): # TODO predict using the model and local histogram
+    def predict(self, learningrate=None): # TODO predict using the model and local histogram
         # use self.model to predict
         # use self.splits to find in which bin X would be and take the middle of that bin. this will be fed into the prediction model
         if self.DXpi is None: # this puts X into the bins!
@@ -288,7 +288,11 @@ class PAXParticipant:
             self.DXpi = interp_values
 
         for class_i in range(self.n_classes):
-            self.prediction[class_i] = self.model[class_i].predict(self.DXpi) # np.array(interp_values).T
+            if self.prediction[class_i] == None:
+                self.prediction[class_i] = self.model[class_i].predict(self.DXpi) # np.array(interp_values).T
+            else:
+                self.prediction[class_i] = self.prediction[class_i] - learningrate * self.model[class_i].predict(self.DXpi) # np.array(interp_values).T
+                
         pass # DEBUG
 
 

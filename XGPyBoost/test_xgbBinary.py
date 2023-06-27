@@ -24,7 +24,7 @@ def main():
     # print(preds)
 
 
-    reg = xgb.XGBClassifier() #tree_method="gpu_hist"
+    reg = xgb.XGBClassifier(max_depth=3, tree_method='exact', objective="binary:logistic", learning_rate=0.3, n_estimators=5, gamma=0.3, reg_alpha=1, reg_lambda=1) #tree_method="gpu_hist"
     reg.fit(X_train,y_train)
     preds_xgb = reg.predict(X_test)
     print('treexgb ', accuracy_score(y_test, preds_xgb))
