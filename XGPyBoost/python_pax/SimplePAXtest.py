@@ -1,4 +1,5 @@
 from PAX import PAX as PAXclass
+from PAX import PAX as PAXclass
 from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 from objectives import softprob
@@ -18,6 +19,7 @@ import utils
 import pickle
 import os
 from tests.membership_helpers import *
+from tests.membership_helpers import *
 import numpy as np
 
 import cProfile # DEBUG
@@ -25,10 +27,11 @@ import time  # DEBUG
 
 MAX_DEPTH = 12
 N_TREES = 30
-ETA = 1
+ETA = 0.3
 GAMMA = 0.3 #std=0.3
 MIN_CHILD_WEIGHT = 1 # std=1
 REG_ALPHA=0 #std =0
+REG_LAMBDA=1
 REG_LAMBDA=1
 N_PARTICIPANTS = 3
 
@@ -79,6 +82,7 @@ def run_both(X_train, X_test, y_train, y_test, params:Params):
     y_train_split = np.array_split(y_train, N_PARTICIPANTS)
     print("> running federated XGBoost...")
     pax = PAXclass(params)
+    pax = PAXclass(params)
     pax.fit(X_train_split, y_train_split, splits)
 
     accuracy_test = accuracy_score(y_test, pax.predict(X_test))
@@ -99,8 +103,7 @@ def test_iris():
     pass
 
 def test_texas():
-    # X, y, _ = getTEXASCloud()
-    X, y, _ = getTexas()
+    X, y, _ = getTEXASCloud()
     X = X[:30_000]
     y = y[:30_000]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)

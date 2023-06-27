@@ -1,0 +1,117 @@
+Sender: LSF System <lsfadmin@rivm-lsfsv-l04p>
+Subject: Job 11547038: </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> in cluster <RIVM-LSF-PRD> Done
+
+Job </home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py> was submitted from host <rivm-biohn-l04p.int.ssc-campus.nl> by user <meerhofj> in cluster <RIVM-LSF-PRD> at Mon Jun 19 16:58:27 2023
+Job was executed on host(s) <24*rivm-lsfsv-l04p>, in queue <bio>, as user <meerhofj> in cluster <RIVM-LSF-PRD> at Mon Jun 19 16:58:28 2023
+</home/meerhofj> was used as the home directory.
+</home/meerhofj/Documents/XGPyBoost-federated-classifier> was used as the working directory.
+Started at Mon Jun 19 16:58:28 2023
+Terminated at Mon Jun 19 20:01:38 2023
+Results reported at Mon Jun 19 20:01:38 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+/home/meerhofj/.conda/envs/federated1/bin/python /home/meerhofj/Documents/XGPyBoost-federated-classifier/XGPyBoost/python_pax/tests/membership_attack_GLOBAL.py
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   12495.09 sec.
+    Max Memory :                                 4968 MB
+    Average Memory :                             2177.03 MB
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              3
+    Max Threads :                                136
+    Run time :                                   10990 sec.
+    Turnaround time :                            10991 sec.
+
+The output (if any) follows:
+
+> Downloading dataset texas from JaapCloud1.0...
+> done downloading from JaapCloud1.0!
+> creating target model as no pickle jar exists
+> approx base accuracy: 0.29
+> shadow accuracy: 0.44
+(20000, 100)
+(20000, 100)
+> Attack accuracy: 0.50
+> Attack precision: 0.49
+n_trees=5
+max_depth=8
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=100
+> creating target model as no pickle jar exists
+> approx base accuracy: 0.22
+> shadow accuracy: 0.46
+(20000, 100)
+(20000, 100)
+> Attack accuracy: 0.50
+> Attack precision: 0.40
+n_trees=20
+max_depth=8
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=100
+> creating target model as no pickle jar exists
+> approx base accuracy: 0.15
+> shadow accuracy: 0.46
+(20000, 100)
+(20000, 100)
+> Attack accuracy: 0.50
+> Attack precision: 0.49
+n_trees=30
+max_depth=8
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=100
+> creating target model as no pickle jar exists
+> approx base accuracy: 0.08
+> shadow accuracy: 0.46
+(20000, 100)
+(20000, 100)
+> Attack accuracy: 0.50
+> Attack precision: 0.50
+n_trees=100
+max_depth=8
+eta=0.30
+lam=1.00
+alpha=0.00
+gamma=0.30
+min_child_weight=1.00
+max_delta_step=0.00
+n_bins=400
+n_participants=5
+num_class=100
+['N_TREES', 'acc_training_target', 'acc_test_target', 'overfit_target', 'acc_training_shadow', 'acc_test_shadow', 'overfit_shadow', 'acc_X_attack', 'acc_other_attack', 'precision_50_attack', 'acc_50_attack']
+[[5, 0.2896, 0.2622, 0.027400000000000035, 0.6072, 0.4424, 0.16479999999999995, 0.231, 0.762, 0.4925373134328358, 0.4965], [20, 0.2219, 0.2072, 0.01469999999999999, 0.9017, 0.456, 0.44569999999999993, 0.0012, 0.9983, 0.41379310344827586, 0.49975], [30, 0.149, 0.1449, 0.0040999999999999925, 0.9263, 0.459, 0.4673, 0.0262, 0.9743, 0.5048169556840078, 0.50025], [100, 0.0758, 0.0795, -0.003699999999999995, 0.9305, 0.4588, 0.4717, 0.1148, 0.8839, 0.49718492854049373, 0.49935]]
+
+
+PS:
+
+Read file <errorGlobalPAX.txt> for stderr output of this job.
+

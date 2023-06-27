@@ -22,29 +22,28 @@ print('MPI get-rank  : '+str(xgb.rabit.get_rank()))
 print('MPI hostname  : '+str(xgb.rabit.get_processor_name()))
 
 rank = xgb.rabit.get_rank()
-XSIZE = 100
+
 # assign dataset to different node(server and local)
 if (rank ==0): 
-	df = pd.read_csv('XGPyBoost/creditcard1_train.csv')
-	X_train = df[df.columns[:-1].tolist()].head(XSIZE)
-	y_train = df[df.columns[-1]].head(XSIZE)
-	print(X_train.shape)
+	df = pd.read_csv('creditcard1_train.csv')
+	X_train = df[df.columns[:-1].tolist()]
+	y_train = df[df.columns[-1]]
 
-	te = pd.read_csv('XGPyBoost/creditcard1_test.csv')
-	X_test = te[te.columns[:-1].tolist()].head(XSIZE)
-	y_test = te[te.columns[-1]].head(XSIZE)
+	te = pd.read_csv('creditcard1_test.csv')
+	X_test = te[te.columns[:-1].tolist()]
+	y_test = te[te.columns[-1]]
 
 if (rank ==1): 
-	df = pd.read_csv('XGPyBoost/credit2_for_update.csv')
-	X_train = df[df.columns[:-1].tolist()].head(XSIZE)
-	y_train = df[df.columns[-1]].head(XSIZE)
+	df = pd.read_csv('credit2_for_update.csv')
+	X_train = df[df.columns[:-1].tolist()]
+	y_train = df[df.columns[-1]]
 
 # feed data into model and set the parameter of fl_split accoring to the size of aggregated data.
 # if you do not set fl_split, then xgboost model will train as original mode.
 # for the cluster number = 405, when min_child_weight = 0.2, it can achieve best performance.
 # for original data, when min_child_weight = 0.01, it can achieve best performance.
 FML = XGBClassifier(fl_split=405,tree_method='approx',updater='grow_histmaker,prune',learning_rate=0.1, 
-					n_estimators=10, max_depth=4, min_child_weight=0.2,gamma=0.03,subsample=0.6,nthread=4,scale_pos_weight=1,seed=27)
+					n_estimators=1000, max_depth=4, min_child_weight=0.2,gamma=0.03,subsample=0.6,nthread=4,scale_pos_weight=1,seed=27)
 
 FML.fit(X_train, y_train)
 

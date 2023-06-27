@@ -20,12 +20,12 @@ XSIZE = 80_000  # 3_186
 SPLIT = XSIZE-(XSIZE//4) # XSIZE//2
 
  # TEXAS TEXAS
-# TESTNAME = "TEXAS_N_TREES_CENTRAL_12DEPTH_20k"
-# PLOT_TITLE = "TEXAS, centralised NTREES"
+TESTNAME = "TEXAS_N_TREES_CENTRAL_8DEPTH_10k_PAX"
+PLOT_TITLE = "TEXAS, centralised NTREES"
  
  # PURCHASE PURCHASE
-TESTNAME = "PURCHASE10_DEBUG"
-PLOT_TITLE = "PURCHASE 10, centralised DEBUG"
+# TESTNAME = "PURCHASE10_REG_MIN_CHILD_WEIGHT3.0_CENTRAL"
+# PLOT_TITLE = "PURCHASE 10, centralised MIN_CHILD_WEIGHT3.0"
 
  # MCLASS MCLASS
 # TESTNAME = "MCLASS100_N_TREES_CENTRAL_12D"
@@ -42,7 +42,7 @@ PLOT_NAME = "plot_" + TESTNAME + ".png"
 DATA_PATH = '/data/BioGrid/meerhofj/texas/'
 # getdata = 
 SAVE = False
-MAX_DEPTH = 12
+MAX_DEPTH = 8
 N_TREES = 100
 ETA = 0.3
 GAMMA = 0.3 #std=0.3
@@ -56,11 +56,11 @@ EA = 1/N_BINS
 
 # X = pickle.load(open(DATA_PATH+"texas_100_v2_features.p", "rb"))
 # y = pickle.load(open(DATA_PATH+"texas_100_v2_labels.p", "rb"))
-# X_, y_, _ = getTEXAS()
-X_, y_, _ = getPURCHASE(10)
-N_CLASSES = 10
+X_, y_, _ = getTEXASCloud()
+# X_, y_, _ = getPURCHASE(10)
+N_CLASSES = 100
 XSIZE = 40_000
-SPLIT = 30_000 
+SPLIT = 30_000
 
 # X_, y_ = make_classification(n_samples=int(XSIZE) , n_features=20, n_informative=10, n_redundant=0, n_classes=N_CLASSES, random_state=50)
 
@@ -101,8 +101,8 @@ def main():
         # target_model.fit(X,y)
 
 
-        # X_PAX = np.array(np.array_split(X, N_PARTICIPANTS))
-        # y_PAX = np.array(np.array_split(y, N_PARTICIPANTS))
+        X_PAX = np.array(np.array_split(X, N_PARTICIPANTS))
+        y_PAX = np.array(np.array_split(y, N_PARTICIPANTS))
         def insert_paramname():
             return "models/" + TARGET_MODEL_NAME[:-4] + "_" + paramstr + TARGET_MODEL_NAME[-4:]
         
@@ -112,11 +112,11 @@ def main():
             target_model = pickle.load(open(insert_paramname(), "rb"))
         else:
             print("> creating target model as no pickle jar exists")
-            # target_model = PAX(Params(n_trees=N_TREES, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT, lam=REG_LAMBDA, alpha=REG_ALPHA, eta=ETA, gamma=GAMMA))
-            target_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="multi:softmax",
-                            learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA, min_child_weight = MIN_CHILD_WEIGHT)
-            target_model.fit(X,y)
-            # target_model.fit(X_PAX, y_PAX, splits)
+            target_model = PAX(Params(n_trees=N_TREES, max_depth=MAX_DEPTH, min_child_weight=MIN_CHILD_WEIGHT, lam=REG_LAMBDA, alpha=REG_ALPHA, eta=ETA, gamma=GAMMA, n_bins=N_BINS, n_participants=N_PARTICIPANTS, eA=EA))
+            # target_model = xgb.XGBClassifier(max_depth=MAX_DEPTH, tree_method='approx', objective="multi:softmax",
+            #                 learning_rate=ETA, n_estimators=N_TREES, gamma=GAMMA, reg_alpha=REG_ALPHA, reg_lambda=REG_LAMBDA, min_child_weight = MIN_CHILD_WEIGHT)
+            # target_model.fit(X,y)
+            target_model.fit(X_PAX, y_PAX, splits)
             pickle.dump(target_model, open( insert_paramname(), "wb"))
 
         # shadow_model = MLPClassifier(hidden_layer_sizes=(16,), activation='relu', solver='adam', learning_rate_init=0.01, max_iter=1000)
